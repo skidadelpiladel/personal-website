@@ -32,11 +32,12 @@ body {
 /* Selection */
 ::selection { background: #D97706; color: #fff; }
 
-/* Reveal animation */
+/* Reveal animation — staggered, perf-safe */
 .reveal {
   opacity: 0;
   transform: translateY(18px);
   transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+  will-change: transform, opacity;
 }
 .reveal.visible {
   opacity: 1;
@@ -45,6 +46,69 @@ body {
 .reveal-delay-1 { transition-delay: 0.08s; }
 .reveal-delay-2 { transition-delay: 0.16s; }
 .reveal-delay-3 { transition-delay: 0.24s; }
+
+/* Hero entrance — cinematic, runs once */
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero-enter { opacity: 0; animation: heroIn 0.9s cubic-bezier(0.16,1,0.3,1) forwards; }
+.hero-enter-1 { animation-delay: 0.08s; }
+.hero-enter-2 { animation-delay: 0.18s; }
+.hero-enter-3 { animation-delay: 0.28s; }
+.hero-enter-4 { animation-delay: 0.38s; }
+
+/* Subtle grid drift */
+@keyframes gridDrift {
+  from { background-position: 0 0; }
+  to { background-position: 32px 32px; }
+}
+.grid-drift { animation: gridDrift 40s linear infinite; }
+
+/* Blinking cursor for build log */
+@keyframes blink { 0%,49% { opacity:1; } 50%,100% { opacity:0; } }
+.blink { animation: blink 1.2s step-end infinite; }
+
+/* Project card premium hover */
+.project-card {
+  transition: transform 0.45s cubic-bezier(0.16,1,0.3,1), border-color 0.4s ease, box-shadow 0.45s ease, background-color 0.3s ease;
+  will-change: transform;
+}
+.project-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(217,119,6,0.28) !important;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(217,119,6,0.08), 0 8px 24px rgba(217,119,6,0.10);
+}
+.project-card:hover .card-arrow { transform: translateX(4px); }
+.card-arrow { transition: transform 0.35s cubic-bezier(0.16,1,0.3,1); }
+
+/* Nav link underline micro */
+.nav-link { position: relative; }
+.nav-link::after {
+  content:""; position:absolute; left:0; bottom:-4px; width:0; height:1px; background:#D97706; transition: width 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+.nav-link:hover::after { width:100%; }
+
+/* Button press / hover */
+.btn-press { transition: transform 0.15s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease; }
+.btn-press:active { transform: scale(0.98); }
+.btn-primary:hover { box-shadow: 0 8px 20px rgba(217,119,6,0.25); transform: translateY(-1px); }
+.btn-primary:active { transform: scale(0.98); }
+
+/* Scroll progress bar */
+.scroll-progress { position: fixed; top:0; left:0; height:1px; background: #D97706; transform-origin: left; z-index: 60; opacity:0.9; }
+
+/* Cursor ambient light — desktop only, very subtle */
+.cursor-light {
+  position: fixed; top:0; left:0; width:720px; height:720px; pointer-events:none; z-index: 1;
+  background: radial-gradient(circle at center, rgba(217,119,6,0.07), transparent 65%);
+  opacity:0; transition: opacity 0.6s ease; mix-blend-mode: screen;
+  will-change: transform; transform: translate(-50%,-50%);
+}
+.cursor-light.visible { opacity:1; }
+
+/* Parallax will-change */
+.parallax { will-change: transform; }
 
 /* Grain texture */
 .grain::before {
@@ -58,3 +122,10 @@ body {
 
 /* Focus */
 :focus-visible { outline: 2px solid #D97706; outline-offset: 2px; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .hero-enter, .grid-drift, .blink, .project-card, .btn-press { animation: none !important; transition: none !important; transform: none !important; }
+  .cursor-light { display:none !important; }
+  .scroll-progress { display:none; }
+}

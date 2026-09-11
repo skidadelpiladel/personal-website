@@ -1,4 +1,4 @@
-import { useEffect, useState, lazy, Suspense } from "react"
+import { useEffect, useState, useRef, lazy, Suspense } from "react"
 import { Routes, Route, Link } from "react-router-dom"
 import { siteData as fallback } from "./data"
 import { useReveal } from "./hooks/useReveal"
@@ -16,6 +16,56 @@ function usePortfolio() {
       .catch(() => setLoading(false))
   }, [])
   return { data, loading }
+}
+
+function ScrollProgress(){
+  const [w,setW]=useState(0)
+  useEffect(()=>{
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const onScroll=()=>{
+      const max=document.documentElement.scrollHeight - window.innerHeight
+      setW(max>0 ? (window.scrollY / max) * 100 : 0)
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, {passive:true})
+    return ()=> window.removeEventListener('scroll', onScroll)
+  },[])
+  return <div className="scroll-progress" style={{width:`${w}%`}} aria-hidden="true" />
+}
+
+function CursorLight(){
+  const cur=useRef({x:0,y:0})
+  const target=useRef({x:0,y:0})
+  useEffect(()=>{
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches || window.matchMedia('(pointer: coarse)').matches) return
+    const el=document.createElement('div')
+    el.className='cursor-light'
+    document.body.appendChild(el)
+    let rafId
+    const lerp=(a,b,n)=>a+(b-a)*n
+    const onMove=(e)=>{
+      target.current.x=e.clientX
+      target.current.y=e.clientY
+      el.classList.add('visible')
+    }
+    const onLeave=()=> el.classList.remove('visible')
+    const tick=()=>{
+      cur.current.x=lerp(cur.current.x,target.current.x,0.08)
+      cur.current.y=lerp(cur.current.y,target.current.y,0.08)
+      el.style.transform=`translate(${cur.current.x}px,${cur.current.y}px) translate(-50%,-50%)`
+      rafId=requestAnimationFrame(tick)
+    }
+    tick()
+    window.addEventListener('mousemove', onMove, {passive:true})
+    window.addEventListener('mouseleave', onLeave)
+    return ()=>{
+      cancelAnimationFrame(rafId)
+      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('mouseleave', onLeave)
+      el.remove()
+    }
+  },[])
+  return null
 }
 
 function Navbar() {
@@ -43,12 +93,12 @@ function Navbar() {
         </Link>
         <div className="hidden md:flex items-center gap-7">
           {links.map(([label, href]) => (
-            <a key={label} href={href} className="text-[13px] tracking-wide font-medium text-[#9f9fa3] hover:text-white transition-colors">
+            <a key={label} href={href} className="nav-link text-[13px] tracking-wide font-medium text-[#9f9fa3] hover:text-white transition-colors">
               {label}
             </a>
           ))}
-          <a href="#contact" className="text-sm font-medium bg-white text-[#0c0c0e] px-4 py-2 rounded-full hover:bg-[#D97706] transition-colors">Get in touch →</a>
-          <Link to="/login" className="font-mono text-[11px] tracking-[0.16em] text-[#6b6b6e] hover:text-[#9f9fa3] border border-[#252529] hover:border-[#3a3a3e] px-3 py-1.5 rounded-full transition-colors">Edit</Link>
+          <a href="#contact" className="btn-press text-sm font-medium bg-white text-[#0c0c0e] px-4 py-2 rounded-full hover:bg-[#D97706] transition-colors">Get in touch →</a>
+          <Link to="/login" className="btn-press font-mono text-[11px] tracking-[0.16em] text-[#6b6b6e] hover:text-[#9f9fa3] border border-[#252529] hover:border-[#3a3a3e] px-3 py-1.5 rounded-full transition-colors">Edit</Link>
         </div>
         <button onClick={() => setOpen(!open)} aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} className="md:hidden w-9 h-9 grid place-items-center rounded-lg border border-[#252529] text-white">
           <span className="font-mono text-sm" aria-hidden="true">{open ? "✕" : "≡"}</span>
@@ -80,39 +130,39 @@ function SectionLabel({ num, label }) {
 function Hero({ d }) {
   return (
     <section className="relative pt-[96px] pb-12 md:pb-20 overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
-      <div className="absolute -top-32 -right-32 w-[720px] h-[720px] rounded-full blur-[120px] opacity-[0.07] pointer-events-none" style={{ background: "radial-gradient(circle, #D97706, transparent 70%)" }} />
-      <div className="absolute top-20 -left-40 w-[600px] h-[600px] rounded-full blur-[120px] opacity-[0.05] pointer-events-none" style={{ background: "radial-gradient(circle, #38bdf8, transparent 70%)" }} />
+      <div className="absolute inset-0 pointer-events-none opacity-[0.04] grid-drift parallax" style={{ backgroundImage: "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
+      <div className="absolute -top-32 -right-32 w-[720px] h-[720px] rounded-full blur-[120px] opacity-[0.07] pointer-events-none parallax" style={{ background: "radial-gradient(circle, #D97706, transparent 70%)" }} />
+      <div className="absolute top-20 -left-40 w-[600px] h-[600px] rounded-full blur-[120px] opacity-[0.05] pointer-events-none parallax" style={{ background: "radial-gradient(circle, #38bdf8, transparent 70%)" }} />
       <div className="max-w-[1160px] mx-auto px-6 relative">
         <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-8 items-center">
-          <div className="reveal">
-            <div className="inline-flex items-center gap-2 text-xs font-mono tracking-widest text-[#9f9fa3] mb-4">
+          <div className="hero-enter">
+            <div className="hero-enter hero-enter-1 inline-flex items-center gap-2 text-xs font-mono tracking-widest text-[#9f9fa3] mb-4">
               <span className="w-1.5 h-1.5 rounded-full bg-[#D97706] animate-pulse" />
               AVAILABLE FOR NEW PROJECTS & COLLABS
             </div>
-            <div className="font-mono text-sm tracking-wide text-[#9f9fa3] mb-2">Hi, I'm <span className="text-white font-semibold">{d.name}</span> —</div>
-            <h1 className="font-display font-bold tracking-[-0.04em] leading-[0.9] text-[42px] sm:text-[56px] lg:text-[68px]">
+            <div className="hero-enter hero-enter-2 font-mono text-sm tracking-wide text-[#9f9fa3] mb-2">Hi, I'm <span className="text-white font-semibold">{d.name}</span> —</div>
+            <h1 className="hero-enter hero-enter-3 font-display font-bold tracking-[-0.04em] leading-[0.9] text-[42px] sm:text-[56px] lg:text-[68px]">
               <span className="block text-white">I make</span>
               <span className="block text-white">stuff</span>
               <span className="block text-[#D97706]">and play</span>
               <span className="block text-[#D97706]">sports.</span>
             </h1>
-            <p className="mt-6 max-w-[520px] text-[16px] md:text-[17px] leading-7 text-[#9f9fa3]">{d.hero.subtitle}</p>
-            <div className="mt-6 inline-flex items-center gap-2.5 bg-[#161618] border border-[#252529] rounded-full px-3 py-2 pr-4">
+            <p className="hero-enter hero-enter-4 mt-6 max-w-[520px] text-[16px] md:text-[17px] leading-7 text-[#9f9fa3]">{d.hero.subtitle}</p>
+            <div className="hero-enter hero-enter-4 mt-6 inline-flex items-center gap-2.5 bg-[#161618] border border-[#252529] rounded-full px-3 py-2 pr-4">
               <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.6)]" />
               <span className="text-xs font-mono text-[#d4d4d8]">{d.hero.status}</span>
             </div>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a href="#projects" className="bg-[#D97706] text-[#0c0c0e] font-medium text-sm px-6 py-3 rounded-full hover:bg-[#E89A4D] transition-colors">View projects →</a>
-              <a href="#growth" className="bg-transparent border border-[#252529] text-white font-medium text-sm px-6 py-3 rounded-full hover:bg-[#161618] transition-colors">My growth story</a>
+            <div className="hero-enter hero-enter-4 mt-8 flex flex-wrap gap-3">
+              <a href="#projects" className="btn-press btn-primary bg-[#D97706] text-[#0c0c0e] font-medium text-sm px-6 py-3 rounded-full hover:bg-[#E89A4D] transition-colors">View projects <span className="card-arrow inline-block ml-1">→</span></a>
+              <a href="#growth" className="btn-press bg-transparent border border-[#252529] text-white font-medium text-sm px-6 py-3 rounded-full hover:bg-[#161618] hover:border-[#3a3a3e] transition-colors">My growth story</a>
             </div>
-            <div className="mt-8 flex items-center gap-6 text-xs font-mono text-[#6b6b6e]">
+            <div className="hero-enter hero-enter-4 mt-8 flex items-center gap-6 text-xs font-mono text-[#6b6b6e]">
               <span className="flex items-center gap-2"><span className="w-4 h-px bg-[#2a2a2e]" /> Arduino</span>
               <span className="flex items-center gap-2"><span className="w-4 h-px bg-[#2a2a2e]" /> Basketball</span>
               <span className="flex items-center gap-2"><span className="w-4 h-px bg-[#2a2a2e]" /> Football</span>
             </div>
           </div>
-          <div className="reveal reveal-delay-1 lg:pl-4">
+          <div className="hero-enter hero-enter-4 lg:pl-4">
             <div className="relative bg-[#161618] border border-[#252529] rounded-[20px] overflow-hidden">
               <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#252529] bg-[#111113]">
                 <div className="flex items-center gap-1.5">
@@ -130,7 +180,7 @@ function Hero({ d }) {
                   <div><span className="text-[#D97706]">while</span> <span className="text-white">(</span><span className="text-white">learning</span><span className="text-white">)</span> <span className="text-white">{`{`}</span></div>
                   <div className="pl-4 text-[#d4d4d8]">build(); <span className="text-[#6b6b6e]">// Arduino, art, ideas</span></div>
                   <div className="pl-4 text-[#d4d4d8]">practice(); <span className="text-[#6b6b6e]">// paint → court → field</span></div>
-                  <div className="pl-4 text-[#38bdf8]">reflect();</div>
+                  <div className="pl-4 text-[#38bdf8]">reflect();<span className="blink inline-block w-[7px] h-[14px] bg-[#D97706] ml-1 translate-y-[2px]" aria-hidden="true"></span></div>
                   <div className="text-white">{`}`}</div>
                 </div>
                 <div className="mt-6 grid grid-cols-3 gap-3">
@@ -378,11 +428,11 @@ function Projects({ d }) {
             <h2 className="font-display font-bold tracking-[-0.03em] text-[32px] md:text-[42px] leading-none">Things I've <span className="text-[#D97706]">built.</span></h2>
             <p className="mt-3 text-sm leading-6 text-[#9f9fa3] max-w-[520px]">Arduino and experiments — now editable from your private admin.</p>
           </div>
-          <a href="#contact" className="hidden md:inline-flex text-sm font-mono tracking-wide text-[#9f9fa3] hover:text-white">Have an idea? Let's talk →</a>
+          <a href="#contact" className="hidden md:inline-flex text-sm font-mono tracking-wide text-[#9f9fa3] hover:text-white group">Have an idea? Let's talk <span className="card-arrow inline-block">→</span></a>
         </div>
         <div className="mt-10 grid md:grid-cols-3 gap-5">
           {d.projects.map((p, i) => (
-            <div key={i} className={`reveal ${i === 1 ? "reveal-delay-1" : i === 2 ? "reveal-delay-2" : ""} group bg-[#161618] border border-[#252529] rounded-[20px] overflow-hidden hover:border-[#2e2e32] transition-colors flex flex-col`}>
+            <div key={i} className={`reveal ${i === 1 ? "reveal-delay-1" : i === 2 ? "reveal-delay-2" : ""} project-card group bg-[#161618] border border-[#252529] rounded-[20px] overflow-hidden flex flex-col`}>
               <div className="h-44 bg-[#0c0c0e] border-b border-[#252529] relative overflow-hidden p-0 flex flex-col justify-between">
                 {p.image && p.image !== "#" && p.image.trim() !== "" ? (
                   <img src={p.image} alt={p.title} className="w-full h-full object-cover" loading="lazy" />
@@ -411,8 +461,8 @@ function Projects({ d }) {
                   ))}
                 </div>
                 <div className="mt-4 flex gap-2">
-                  {p.links.github && p.links.github !== "#" && p.links.github.trim() !== "" ? <a href={p.links.github} target="_blank" rel="noreferrer" className="flex-1 bg-white text-[#0c0c0e] text-center text-xs font-semibold py-2.5 rounded-full hover:bg-[#D97706] transition-colors">GitHub</a> : <span className="flex-1 bg-[#1e1e20] border border-[#252529] text-[#6b6b6e] text-center text-xs font-semibold py-2.5 rounded-full">GitHub — add in Admin</span>}
-                  {p.links.demo && p.links.demo !== "#" && p.links.demo.trim() !== "" ? <a href={p.links.demo} target="_blank" rel="noreferrer" className="flex-1 bg-transparent border border-[#252529] text-white text-center text-xs font-semibold py-2.5 rounded-full hover:bg-[#0c0c0e] transition-colors">Demo</a> : <span className="flex-1 bg-transparent border border-dashed border-[#252529] text-[#6b6b6e] text-center text-xs font-semibold py-2.5 rounded-full">Demo — soon</span>}
+                  {p.links.github && p.links.github !== "#" && p.links.github.trim() !== "" ? <a href={p.links.github} target="_blank" rel="noreferrer" className="btn-press flex-1 bg-white text-[#0c0c0e] text-center text-xs font-semibold py-2.5 rounded-full hover:bg-[#D97706] transition-colors">GitHub <span className="card-arrow inline-block">↗</span></a> : <span className="flex-1 bg-[#1e1e20] border border-[#252529] text-[#6b6b6e] text-center text-xs font-semibold py-2.5 rounded-full">GitHub — add in Admin</span>}
+                  {p.links.demo && p.links.demo !== "#" && p.links.demo.trim() !== "" ? <a href={p.links.demo} target="_blank" rel="noreferrer" className="btn-press flex-1 bg-transparent border border-[#252529] text-white text-center text-xs font-semibold py-2.5 rounded-full hover:bg-[#0c0c0e] hover:border-[#3a3a3e] transition-colors">Demo <span className="card-arrow inline-block">→</span></a> : <span className="flex-1 bg-transparent border border-dashed border-[#252529] text-[#6b6b6e] text-center text-xs font-semibold py-2.5 rounded-full">Demo — soon</span>}
                 </div>
               </div>
             </div>
@@ -592,8 +642,29 @@ function Footer({ d }) {
 function PortfolioPage() {
   const { data } = usePortfolio()
   useReveal()
+  useEffect(()=>{
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const els=document.querySelectorAll('.parallax')
+    let ticking=false
+    const onScroll=()=>{
+      if(ticking) return
+      ticking=true
+      requestAnimationFrame(()=>{
+        const y=window.scrollY
+        els.forEach((el,i)=>{
+          const speed = 0.04 + (i%3)*0.02
+          el.style.transform=`translate3d(0, ${y*speed*0.35}px, 0)`
+        })
+        ticking=false
+      })
+    }
+    window.addEventListener('scroll', onScroll, {passive:true})
+    return ()=> window.removeEventListener('scroll', onScroll)
+  },[])
   return (
-    <div className="min-h-screen bg-[#0c0c0e] text-white selection:bg-[#D97706] selection:text-[#0c0c0e]">
+    <div className="min-h-screen bg-[#0c0c0e] text-white selection:bg-[#D97706] selection:text-white">
+      <ScrollProgress />
+      <CursorLight />
       <Navbar />
       <main>
         <Hero d={data} />
