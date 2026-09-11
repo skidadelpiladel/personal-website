@@ -24,6 +24,7 @@ if (process.env.VERCEL && !fs.existsSync(DATA_PATH)) {
 }
 
 const app = express()
+app.set('trust proxy', 1)
 const PORT = process.env.PORT || 3001
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -58,6 +59,17 @@ function loadPortfolio(){ try{ return JSON.parse(fs.readFileSync(DATA_PATH,'utf-
 function savePortfolio(d){ const t=DATA_PATH+'.tmp'; fs.writeFileSync(t, JSON.stringify(d,null,2),'utf-8'); fs.renameSync(t, DATA_PATH) }
 
 const loginLimiter = rateLimit({ windowMs:15*60*1000, max:10, standardHeaders:true, legacyHeaders:false, message:{error:'Too many login attempts'} })
+
+// --- debug (no secrets, just presence) ---
+app.get('/api/debug/env', (req,res)=> res.json({
+  sessionSecret: !!process.env.SESSION_SECRET && process.env.SESSION_SECRET.length>=32,
+  sessionSecretLen: (process.env.SESSION_SECRET||'').length,
+  adminUser: !!process.env.ADMIN_USERNAME,
+  adminHash: !!process.env.ADMIN_PASSWORD_HASH && /^\$2[aby]\$/.test((process.env.ADMIN_PASSWORD_HASH||'').trim()),
+  vercel: !!process.env.VERCEL,
+  nodeEnv: process.env.NODE_ENV,
+  cookieSecure: process.env.COOKIE_SECURE
+}))
 
 // --- auth (public login, server-side session) ---
 app.get('/api/csrf-token', (req,res)=> res.json({csrfToken:getCsrf(req)}))
@@ -150,14 +162,14 @@ if(!isProd){
 }
 
 app.use((err,req,res,next)=>{
-  console.error(err)
-  // express.json SyntaxError etc must still be JSON, not HTML
+  console.error('Unhandled error:', err?.stack || err)
   if(err?.type==='entity.parse.failed' || err instanceof SyntaxError){
     return res.status(400).json({error:'Invalid JSON'})
   }
   if(err instanceof multer.MulterError) return res.status(400).json({error: err.code==='LIMIT_FILE_SIZE'?'File too large (max 2MB)':'Upload error'})
   if(err.message==='Invalid file type'||err.message==='Invalid extension') return res.status(400).json({error:err.message})
-  if(!res.headersSent) res.status(err.status||500).json({error: err.expose ? err.message : 'Internal error'})
+  // always JSON, never HTML — include request path for debugging without leaking secrets
+  if(!res.headersSent) res.status(err.status||500).json({error: err.expose ? err.message : 'Internal error', path: req.path})
 })
 
 export default app
