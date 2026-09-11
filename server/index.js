@@ -15,9 +15,13 @@ import { body, validationResult } from 'express-validator'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const ROOT = path.join(__dirname, '..')
-const DATA_PATH = path.join(__dirname, 'data', 'portfolio.json')
-const UPLOAD_DIR = path.join(ROOT, 'public', 'uploads')
+const DATA_PATH = process.env.VERCEL ? path.join('/tmp', 'portfolio.json') : path.join(__dirname, 'data', 'portfolio.json')
+const UPLOAD_DIR = process.env.VERCEL ? path.join('/tmp', 'uploads') : path.join(ROOT, 'public', 'uploads')
 if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true })
+// on Vercel first run, seed /tmp from repo file if exists
+if (process.env.VERCEL && !fs.existsSync(DATA_PATH)) {
+  try { const seed = path.join(__dirname, 'data', 'portfolio.json'); if (fs.existsSync(seed)) fs.copyFileSync(seed, DATA_PATH) } catch {}
+}
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -136,4 +140,7 @@ app.use((err,req,res,next)=>{
   res.status(500).json({error:'Internal error'})
 })
 
-app.listen(PORT, ()=> console.log(`Server http://localhost:${PORT} env=${process.env.NODE_ENV} — /login public, /admin server-protected`))
+export default app
+if (!process.env.VERCEL) {
+  app.listen(PORT, ()=> console.log(`Server http://localhost:${PORT} env=${process.env.NODE_ENV} — /login public, /admin server-protected`))
+}
