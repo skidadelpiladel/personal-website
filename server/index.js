@@ -34,16 +34,16 @@ app.use(express.json({ limit: '1mb' }))
 app.use(express.urlencoded({ extended: true, limit: '1mb' }))
 
 // --- session (secrets in env, not committed) ---
-const SESSION_SECRET = process.env.SESSION_SECRET
-if (!SESSION_SECRET || SESSION_SECRET.length < 32) {
-  console.error('SESSION_SECRET must be >=32 chars in .env')
-  // don't crash with HTML on Vercel — keep responding JSON so frontend gets valid JSON
-  // In dev, still warn; in prod, allow boot but auth will fail with JSON
+const RAW_SESSION_SECRET = (process.env.SESSION_SECRET || '').trim()
+const SESSION_SECRET_VALID = RAW_SESSION_SECRET.length >= 32
+if (!SESSION_SECRET_VALID) {
+  console.error('SESSION_SECRET must be >=32 chars in .env — auth will return JSON 500 until fixed')
   if (!process.env.VERCEL) process.exit(1)
 }
+const SESSION_SECRET_EFFECTIVE = SESSION_SECRET_VALID ? RAW_SESSION_SECRET : 'fallback_vercel_must_be_32_chars_long_for_dev_only_12345678'
 app.use(session({
   name: 'portfolio.sid',
-  secret: SESSION_SECRET,
+  secret: SESSION_SECRET_EFFECTIVE,
   resave: false,
   saveUninitialized: false,
   cookie: { httpOnly: true, secure: process.env.COOKIE_SECURE === 'true', sameSite: 'strict', maxAge: 1000*60*60*2 }
@@ -67,10 +67,13 @@ app.get('/api/auth/me', (req,res)=> {
 })
 app.post('/api/auth/login', loginLimiter, body('username').isString().trim().isLength({min:1,max:64}), body('password').isString().isLength({min:1,max:128}), async (req,res)=>{
   try{
+    if(!SESSION_SECRET_VALID) return res.status(500).json({error:'Server misconfigured — missing SESSION_SECRET (≥32 chars) in env'})
     const err=validationResult(req); if(!err.isEmpty()) return res.status(400).json({error:'Invalid input'})
     const {username,password}=req.body
-    const expU=process.env.ADMIN_USERNAME, expH=process.env.ADMIN_PASSWORD_HASH
+    const expU=(process.env.ADMIN_USERNAME||'').trim(), expH=(process.env.ADMIN_PASSWORD_HASH||'').trim()
     if(!expU||!expH) return res.status(500).json({error:'Server misconfigured — set ADMIN_USERNAME and ADMIN_PASSWORD_HASH in env'})
+    // validate hash looks like bcrypt (avoid plaintext causing bcrypt throw → 500 Internal error)
+    if(!/^\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}$/.test(expH)) return res.status(500).json({error:'Server misconfigured — ADMIN_PASSWORD_HASH must be bcrypt hash (use npm run hash)'})
     // ensure JSON content-type for all branches
     res.type('application/json')
     if(username!==expU){ try{ await bcrypt.compare(password,expH) }catch{}; return res.status(401).json({error:'Invalid credentials'}) }
