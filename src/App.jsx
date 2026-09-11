@@ -92,10 +92,10 @@ function Hero({ d }) {
             </div>
             <div className="font-mono text-sm tracking-wide text-[#9f9fa3] mb-2">Hi, I'm <span className="text-white font-semibold">{d.name}</span> —</div>
             <h1 className="font-display font-bold tracking-[-0.04em] leading-[0.9] text-[42px] sm:text-[56px] lg:text-[68px]">
-              <span className="block text-white">Quiet</span>
-              <span className="block text-white">builder.</span>
-              <span className="block text-[#D97706]">Steady</span>
-              <span className="block text-[#D97706]">improver.</span>
+              <span className="block text-white">I make</span>
+              <span className="block text-white">stuff</span>
+              <span className="block text-[#D97706]">and play</span>
+              <span className="block text-[#D97706]">sports.</span>
             </h1>
             <p className="mt-6 max-w-[520px] text-[16px] md:text-[17px] leading-7 text-[#9f9fa3]">{d.hero.subtitle}</p>
             <div className="mt-6 inline-flex items-center gap-2.5 bg-[#161618] border border-[#252529] rounded-full px-3 py-2 pr-4">

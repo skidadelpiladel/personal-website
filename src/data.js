@@ -6,11 +6,11 @@ export const siteData = {
   name: "Dinh",
   // shown in hero — edit to your real name
   hero: {
-    title: "Quiet builder.",
-    titleAccent: "Steady improver.",
+    title: "I make stuff",
+    titleAccent: "and play sports.",
     subtitle:
-      "I like making things with my hands, figuring things out on my own, and seeing progress — one project, one practice, one rep at a time.",
-    status: "Currently building → Arduino experiments & working on my game",
+      "I'm into Arduino, basketball and football. I just like trying stuff, figuring it out myself, and getting a little better as I go.",
+    status: "Right now just messing with Arduino and working on my game",
   },
 
   // About — keep it human, not a résumé
