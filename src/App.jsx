@@ -130,39 +130,39 @@ function SectionLabel({ num, label }) {
 function Hero({ d }) {
   return (
     <section className="relative pt-[96px] pb-12 md:pb-20 overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none opacity-[0.04] grid-drift parallax" style={{ backgroundImage: "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
-      <div className="absolute -top-32 -right-32 w-[720px] h-[720px] rounded-full blur-[120px] opacity-[0.07] pointer-events-none parallax" style={{ background: "radial-gradient(circle, #D97706, transparent 70%)" }} />
-      <div className="absolute top-20 -left-40 w-[600px] h-[600px] rounded-full blur-[120px] opacity-[0.05] pointer-events-none parallax" style={{ background: "radial-gradient(circle, #38bdf8, transparent 70%)" }} />
+      <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
+      <div className="absolute -top-32 -right-32 w-[720px] h-[720px] rounded-full blur-[120px] opacity-[0.07] pointer-events-none" style={{ background: "radial-gradient(circle, #D97706, transparent 70%)" }} />
+      <div className="absolute top-20 -left-40 w-[600px] h-[600px] rounded-full blur-[120px] opacity-[0.05] pointer-events-none" style={{ background: "radial-gradient(circle, #38bdf8, transparent 70%)" }} />
       <div className="max-w-[1160px] mx-auto px-6 relative">
         <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-8 items-center">
-          <div className="hero-enter">
-            <div className="hero-enter hero-enter-1 inline-flex items-center gap-2 text-xs font-mono tracking-widest text-[#9f9fa3] mb-4">
+          <div className="reveal">
+            <div className="inline-flex items-center gap-2 text-xs font-mono tracking-widest text-[#9f9fa3] mb-4">
               <span className="w-1.5 h-1.5 rounded-full bg-[#D97706] animate-pulse" />
               AVAILABLE FOR NEW PROJECTS & COLLABS
             </div>
-            <div className="hero-enter hero-enter-2 font-mono text-sm tracking-wide text-[#9f9fa3] mb-2">Hi, I'm <span className="text-white font-semibold">{d.name}</span> —</div>
-            <h1 className="hero-enter hero-enter-3 font-display font-bold tracking-[-0.04em] leading-[0.9] text-[42px] sm:text-[56px] lg:text-[68px]">
+            <div className="font-mono text-sm tracking-wide text-[#9f9fa3] mb-2">Hi, I'm <span className="text-white font-semibold">{d.name}</span> —</div>
+            <h1 className="font-display font-bold tracking-[-0.04em] leading-[0.9] text-[42px] sm:text-[56px] lg:text-[68px]">
               <span className="block text-white">I make</span>
               <span className="block text-white">stuff</span>
               <span className="block text-[#D97706]">and play</span>
               <span className="block text-[#D97706]">sports.</span>
             </h1>
-            <p className="hero-enter hero-enter-4 mt-6 max-w-[520px] text-[16px] md:text-[17px] leading-7 text-[#9f9fa3]">{d.hero.subtitle}</p>
-            <div className="hero-enter hero-enter-4 mt-6 inline-flex items-center gap-2.5 bg-[#161618] border border-[#252529] rounded-full px-3 py-2 pr-4">
+            <p className="mt-6 max-w-[520px] text-[16px] md:text-[17px] leading-7 text-[#9f9fa3]">{d.hero.subtitle}</p>
+            <div className="mt-6 inline-flex items-center gap-2.5 bg-[#161618] border border-[#252529] rounded-full px-3 py-2 pr-4">
               <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.6)]" />
               <span className="text-xs font-mono text-[#d4d4d8]">{d.hero.status}</span>
             </div>
-            <div className="hero-enter hero-enter-4 mt-8 flex flex-wrap gap-3">
-              <a href="#projects" className="btn-press btn-primary bg-[#D97706] text-[#0c0c0e] font-medium text-sm px-6 py-3 rounded-full hover:bg-[#E89A4D] transition-colors">View projects <span className="card-arrow inline-block ml-1">→</span></a>
-              <a href="#growth" className="btn-press bg-transparent border border-[#252529] text-white font-medium text-sm px-6 py-3 rounded-full hover:bg-[#161618] hover:border-[#3a3a3e] transition-colors">My growth story</a>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a href="#projects" className="bg-[#D97706] text-[#0c0c0e] font-medium text-sm px-6 py-3 rounded-full hover:bg-[#E89A4D] transition-colors">View projects →</a>
+              <a href="#growth" className="bg-transparent border border-[#252529] text-white font-medium text-sm px-6 py-3 rounded-full hover:bg-[#161618] transition-colors">My growth story</a>
             </div>
-            <div className="hero-enter hero-enter-4 mt-8 flex items-center gap-6 text-xs font-mono text-[#6b6b6e]">
+            <div className="mt-8 flex items-center gap-6 text-xs font-mono text-[#6b6b6e]">
               <span className="flex items-center gap-2"><span className="w-4 h-px bg-[#2a2a2e]" /> Arduino</span>
               <span className="flex items-center gap-2"><span className="w-4 h-px bg-[#2a2a2e]" /> Basketball</span>
               <span className="flex items-center gap-2"><span className="w-4 h-px bg-[#2a2a2e]" /> Football</span>
             </div>
           </div>
-          <div className="hero-enter hero-enter-4 lg:pl-4">
+          <div className="reveal reveal-delay-1 lg:pl-4">
             <div className="relative bg-[#161618] border border-[#252529] rounded-[20px] overflow-hidden">
               <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#252529] bg-[#111113]">
                 <div className="flex items-center gap-1.5">

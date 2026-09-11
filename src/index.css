@@ -47,16 +47,9 @@ body {
 .reveal-delay-2 { transition-delay: 0.16s; }
 .reveal-delay-3 { transition-delay: 0.24s; }
 
-/* Hero entrance — cinematic, runs once */
-@keyframes heroIn {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.hero-enter { opacity: 0; animation: heroIn 0.9s cubic-bezier(0.16,1,0.3,1) forwards; }
-.hero-enter-1 { animation-delay: 0.08s; }
-.hero-enter-2 { animation-delay: 0.18s; }
-.hero-enter-3 { animation-delay: 0.28s; }
-.hero-enter-4 { animation-delay: 0.38s; }
+/* Hero entrance — disabled to restore layout (was hiding hero when animation failed) */
+.hero-enter { opacity: 1; animation: none; }
+.hero-enter-1, .hero-enter-2, .hero-enter-3, .hero-enter-4 { animation: none; opacity: 1; transform: none; }
 
 /* Subtle grid drift */
 @keyframes gridDrift {
