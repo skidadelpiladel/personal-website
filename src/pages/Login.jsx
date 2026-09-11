@@ -56,7 +56,6 @@ export default function Login() {
               {loading ? 'Signing in…' : 'Sign in →'}
             </button>
           </form>
-          <p className="mt-4 text-xs font-mono text-[#6b6b6e] text-center">Default: admin / Admin123! — change via .env → ADMIN_PASSWORD_HASH</p>
         </div>
       </div>
     </div>

@@ -37,7 +37,9 @@ app.use(express.urlencoded({ extended: true, limit: '1mb' }))
 const SESSION_SECRET = process.env.SESSION_SECRET
 if (!SESSION_SECRET || SESSION_SECRET.length < 32) {
   console.error('SESSION_SECRET must be >=32 chars in .env')
-  process.exit(1)
+  // don't crash with HTML on Vercel — keep responding JSON so frontend gets valid JSON
+  // In dev, still warn; in prod, allow boot but auth will fail with JSON
+  if (!process.env.VERCEL) process.exit(1)
 }
 app.use(session({
   name: 'portfolio.sid',
@@ -64,17 +66,25 @@ app.get('/api/auth/me', (req,res)=> {
   res.json({authenticated:false})
 })
 app.post('/api/auth/login', loginLimiter, body('username').isString().trim().isLength({min:1,max:64}), body('password').isString().isLength({min:1,max:128}), async (req,res)=>{
-  const err=validationResult(req); if(!err.isEmpty()) return res.status(400).json({error:'Invalid input'})
-  const {username,password}=req.body
-  const expU=process.env.ADMIN_USERNAME, expH=process.env.ADMIN_PASSWORD_HASH
-  if(!expU||!expH) return res.status(500).json({error:'Server misconfigured'})
-  if(username!==expU){ await bcrypt.compare(password,expH); return res.status(401).json({error:'Invalid credentials'}) }
-  if(!await bcrypt.compare(password,expH)) return res.status(401).json({error:'Invalid credentials'})
-  req.session.regenerate(er=>{
-    if(er) return res.status(500).json({error:'Login failed'})
-    req.session.user={username}; req.session.csrfToken=crypto.randomBytes(32).toString('hex')
-    req.session.save(e=> e? res.status(500).json({error:'Login failed'}) : res.json({success:true, csrfToken:req.session.csrfToken}))
-  })
+  try{
+    const err=validationResult(req); if(!err.isEmpty()) return res.status(400).json({error:'Invalid input'})
+    const {username,password}=req.body
+    const expU=process.env.ADMIN_USERNAME, expH=process.env.ADMIN_PASSWORD_HASH
+    if(!expU||!expH) return res.status(500).json({error:'Server misconfigured — set ADMIN_USERNAME and ADMIN_PASSWORD_HASH in env'})
+    // ensure JSON content-type for all branches
+    res.type('application/json')
+    if(username!==expU){ try{ await bcrypt.compare(password,expH) }catch{}; return res.status(401).json({error:'Invalid credentials'}) }
+    let ok=false; try{ ok=await bcrypt.compare(password,expH) }catch(e){ return res.status(500).json({error:'Login failed'}) }
+    if(!ok) return res.status(401).json({error:'Invalid credentials'})
+    req.session.regenerate(er=>{
+      if(er) return res.status(500).json({error:'Login failed'})
+      req.session.user={username}; req.session.csrfToken=crypto.randomBytes(32).toString('hex')
+      req.session.save(e=> e? res.status(500).json({error:'Login failed'}) : res.json({success:true, csrfToken:req.session.csrfToken}))
+    })
+  }catch(e){
+    console.error('login error', e)
+    if(!res.headersSent) res.status(500).json({error:'Login failed'})
+  }
 })
 app.post('/api/auth/logout', requireAuth, requireCsrf, (req,res)=>{
   req.session.destroy(er=>{ if(er) return res.status(500).json({error:'Logout failed'}); res.clearCookie('portfolio.sid'); res.json({success:true}) })
@@ -109,6 +119,9 @@ const upload=multer({ storage, limits:{fileSize:2*1024*1024, files:1}, fileFilte
 app.post('/api/upload', requireAuth, requireCsrf, upload.single('image'), (req,res)=>{ if(!req.file) return res.status(400).json({error:'No file'}); res.json({url:`/uploads/${req.file.filename}`}) })
 app.use('/uploads', express.static(UPLOAD_DIR, {maxAge:'1d'}))
 
+// ensure unmatched /api routes always return JSON (not HTML from Vite/static) so frontend never gets "Unexpected token '<' or 'A'"
+app.use('/api', (req,res)=> res.status(404).json({error:'Not found'}))
+
 // --- frontend: single origin so /admin can be server-protected in dev & prod ---
 let vite
 if(!isProd){
@@ -135,9 +148,13 @@ if(!isProd){
 
 app.use((err,req,res,next)=>{
   console.error(err)
+  // express.json SyntaxError etc must still be JSON, not HTML
+  if(err?.type==='entity.parse.failed' || err instanceof SyntaxError){
+    return res.status(400).json({error:'Invalid JSON'})
+  }
   if(err instanceof multer.MulterError) return res.status(400).json({error: err.code==='LIMIT_FILE_SIZE'?'File too large (max 2MB)':'Upload error'})
   if(err.message==='Invalid file type'||err.message==='Invalid extension') return res.status(400).json({error:err.message})
-  res.status(500).json({error:'Internal error'})
+  if(!res.headersSent) res.status(err.status||500).json({error: err.expose ? err.message : 'Internal error'})
 })
 
 export default app
