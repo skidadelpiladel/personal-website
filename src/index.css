@@ -30,7 +30,7 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: #3a3a3e; }
 
 /* Selection */
-::selection { background: #facc15; color: #0c0c0e; }
+::selection { background: #D97706; color: #fff; }
 
 /* Reveal animation */
 .reveal {
@@ -57,4 +57,4 @@ body {
 }
 
 /* Focus */
-:focus-visible { outline: 2px solid #facc15; outline-offset: 2px; }
+:focus-visible { outline: 2px solid #D97706; outline-offset: 2px; }

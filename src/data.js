@@ -97,8 +97,9 @@ export const siteData = {
       desc: "Add your Arduino project here — what it does, what you used, what you learned. Replace this placeholder when ready.",
       tech: ["Arduino", "C++", "Sensors"],
       learned: "What did this project teach you?",
-      status: "Placeholder — easy to edit in src/data.js",
-      links: { github: "#", demo: "#" },
+      status: "Placeholder — easy to edit in Admin",
+      links: { github: "", demo: "" },
+      image: "",
     },
     {
       title: "Another experiment",
@@ -106,7 +107,8 @@ export const siteData = {
       tech: ["Your", "Tech", "Here"],
       learned: "Add your reflection here.",
       status: "Placeholder",
-      links: { github: "#", demo: "#" },
+      links: { github: "", demo: "" },
+      image: "",
     },
     {
       title: "Future build",
@@ -114,7 +116,8 @@ export const siteData = {
       tech: ["To be added"],
       learned: "Progress over perfection.",
       status: "Coming soon",
-      links: { github: "#", demo: "#" },
+      links: { github: "", demo: "" },
+      image: "",
     },
   ],
 
@@ -140,9 +143,8 @@ export const siteData = {
   },
 
   contact: {
-    email: "your.email@example.com",
-    github: "https://github.com/",
-    // add more when ready: linkedin, instagram, etc.
+    email: "",
+    github: "",
     note: "Quiet at first, but I love talking about projects once we get going. Reach out if you want to talk builds, basketball, or ideas.",
   },
 }
