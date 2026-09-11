@@ -4,10 +4,6 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  server: {
-    proxy: {
-      '/api': 'http://localhost:3001',
-      '/uploads': 'http://localhost:3001',
-    }
-  }
+  // single-origin dev: Express serves Vite middleware on 3001, no proxy needed
+  server: { middlewareMode: false }
 })
