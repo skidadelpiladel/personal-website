@@ -1,44 +1,79 @@
 # Personal Portfolio — Quiet Builder. Steady Improver.
 
-Modern dark portfolio built with Vite + React + Tailwind CSS 4. Designed to feel like a real identity — not a generic template.
+Modern dark portfolio with **private editing system** — Vite + React + Tailwind 4 + Express.
 
-## Run
+## Quick start
 
 ```bash
 npm install
-npm run dev    # http://localhost:5173
-npm run build
-npm run preview
+# set secrets (first time)
+# .env already contains dev defaults — see .env.example
+# generate your own password hash:
+npm run hash your_new_password
+
+# run both server + client (recommended)
+npm run dev
+# → client http://localhost:5173
+# → server http://localhost:3001
+
+# or run separately
+npm run dev:server
+npm run dev:client
 ```
 
-## Edit your info — one file
+Build for production:
+```bash
+npm run build
+npm start          # serves dist via Express on PORT (default 3001)
+```
 
-All personal content lives in `src/data.js`:
+## Public site
 
-- `siteData.name` — your name (shown in hero)
-- `siteData.hero` — subtitle & status pill
-- `siteData.about` — paragraphs & traits
-- `siteData.whatIDo` — 4 cards (Arduino, Basketball, Football, Art)
-- `siteData.strengths` — 4 strengths
-- `siteData.growth` — basketball footwork story (Before → Practice → Progress)
-- `siteData.projects` — 3 placeholder cards (title, desc, tech, learned, links)
-- `siteData.goals` — Learn / Build / Improve / Repeat
-- `siteData.highlights` — leave empty until you have real awards (no fake entries)
-- `siteData.personal` — Right now / Learning / Improving
-- `siteData.contact` — email + GitHub (add more links as needed)
+- `/` — portfolio (fetches `/api/portfolio`, falls back to `src/data.js` if server offline)
+- No admin controls visible to visitors
 
-> No achievements, awards, or backstories are fabricated. Empty sections show an inviting placeholder instead.
+## Private editing
 
-## Structure
+- `/login` — admin login (server-side session, bcrypt, rate-limited)
+- `/admin` — dashboard with tabs: Overview / Portfolio / Projects / Highlights / Contact
 
-- `src/App.jsx` — all sections (Hero, About, Work, Strengths, Growth, Projects, Goals, Highlights, Personal, Footer)
-- `src/index.css` — Tailwind + reveal animations + dark theme
-- `src/hooks/useReveal.js` — IntersectionObserver scroll-reveal
-- `src/data.js` — single source of truth for copy
+What you can edit without code:
+- Name, hero subtitle/status, about paragraphs/traits
+- Interests (whatIDo), strengths, growth story, goals, personal (now/learning/improving)
+- Projects: title, desc, tech tags, learned, status, GitHub/demo links, image (upload 2MB max, jpg/png/webp/gif/svg)
+- Highlights/achievements, contact email/github/note
+
+Changes save to `server/data/portfolio.json` via `PUT /api/portfolio` (auth + CSRF protected) and persist after refresh. Images go to `public/uploads/`.
+
+### Default credentials (dev)
+
+- Username: `admin`
+- Password: `Admin123!`  — hash in `.env` → `ADMIN_PASSWORD_HASH`
+- Change immediately: `npm run hash MyStrongPass123!` → copy hash to `.env` → restart server
+
+## Security architecture
+
+- **Stack**: Express 5, express-session (httpOnly, SameSite=strict, Secure via `COOKIE_SECURE`), bcryptjs, helmet, CORS, express-rate-limit, multer, express-validator
+- **Secrets**: never in frontend — `SESSION_SECRET`, `ADMIN_USERNAME`, `ADMIN_PASSWORD_HASH` in `.env` (gitignored, see `.env.example`)
+- **Auth**: `POST /api/auth/login` validates via `bcrypt.compare`, regenerates session (fixation protection), stores `req.session.user`; `GET /api/auth/me` checks session; `POST /api/auth/logout` requires auth+CSRF
+- **CSRF**: per-session token via `GET /api/csrf-token`; client sends `x-csrf-token` header; server middleware `requireCsrf` checks for all mutating routes
+- **Rate limit**: login 10 / 15min per IP
+- **Validation/sanitize**: all fields stripped of `<>` tags, length-capped, URLs validated (`http/https/mailto/#/relative` only); file uploads: MIME + extension whitelist, max 2MB, random filename, served via `express.static`
+- **Helmet**: `X-Content-Type-Options: nosniff` etc.; generic error messages (no stack leak)
+- **Route protection**: `requireAuth` on `PUT /api/portfolio` and `POST /api/upload`; in production `GET /admin*` checks `req.session.user` before serving `dist`
+- **XSS/injection mitigation**: React escapes, server sanitizes, no DB injection (JSON file, atomic write via tmp+rename)
+
+## Files
+
+- `server/index.js` — Express + security middleware + API + upload + prod static serving
+- `server/data/portfolio.json` — persisted portfolio (editable via admin, not via code)
+- `server/scripts/generate-hash.js` — `node server/scripts/generate-hash.js <pwd>`
+- `src/data.js` — static fallback for offline dev
+- `src/lib/api.js` — CSRF-aware fetch helpers
+- `src/pages/Login.jsx` / `src/pages/Admin.jsx` — private UI (responsive, forms, not shown publicly)
+- `src/App.jsx` — public portfolio (data-driven, `usePortfolio` fetches `/api/portfolio`)
+- `vite.config.js` — proxies `/api` + `/uploads` to server in dev
 
 ## Design
 
-- Dark neutral theme (`#0c0c0e` / `#161618`), yellow accent `#facc15`, blue secondary
-- Space Grotesk + Inter + JetBrains Mono
-- Subtle grid, radial glows, card hovers, scroll-reveal, smooth scroll
-- Fully responsive (mobile nav, stacked grids)
+- Dark `#0c0c0e` / `#161618`, yellow `#facc15`, blue secondary, Space Grotesk + Inter + JetBrains Mono, grid+glow, reveal animations, fully responsive
