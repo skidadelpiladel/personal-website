@@ -3,7 +3,7 @@
 // ============================================
 
 export const siteData = {
-  name: "Alex",
+  name: "Dinh",
   // shown in hero — edit to your real name
   hero: {
     title: "Quiet builder.",
