@@ -48,6 +48,7 @@ function Navbar() {
             </a>
           ))}
           <a href="#contact" className="text-sm font-medium bg-white text-[#0c0c0e] px-4 py-2 rounded-full hover:bg-[#D97706] transition-colors">Get in touch →</a>
+          <Link to="/login" className="font-mono text-[11px] tracking-[0.16em] text-[#6b6b6e] hover:text-[#9f9fa3] border border-[#252529] hover:border-[#3a3a3e] px-3 py-1.5 rounded-full transition-colors">Edit</Link>
         </div>
         <button onClick={() => setOpen(!open)} aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} className="md:hidden w-9 h-9 grid place-items-center rounded-lg border border-[#252529] text-white">
           <span className="font-mono text-sm" aria-hidden="true">{open ? "✕" : "≡"}</span>
@@ -59,6 +60,7 @@ function Navbar() {
             <a key={label} onClick={() => setOpen(false)} href={href} className="text-sm text-[#9f9fa3] hover:text-white">{label}</a>
           ))}
           <a onClick={() => setOpen(false)} href="#contact" className="mt-2 bg-white text-[#0c0c0e] text-center px-4 py-2.5 rounded-full font-medium text-sm">Get in touch</a>
+          <Link to="/login" onClick={() => setOpen(false)} className="font-mono text-[11px] tracking-[0.16em] text-[#6b6b6e] border border-[#252529] px-3 py-2 rounded-full text-center">Edit</Link>
         </div>
       )}
     </nav>
