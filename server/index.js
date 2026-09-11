@@ -140,9 +140,9 @@ if(!isProd){
 } else {
   const dist=path.join(ROOT,'dist')
   if(fs.existsSync(dist)){
-    app.get('/admin*', (req,res,next)=>{ if(!req.session.user) return res.status(401).send('Unauthorized — <a href="/login">login</a>'); next() })
+    app.use('/admin', (req,res,next)=>{ if(!req.session.user) return res.status(401).send('Unauthorized — <a href="/login">login</a>'); next() })
     app.use(express.static(dist))
-    app.get('*', (req,res)=>{ if(req.path.startsWith('/api/')) return res.status(404).json({error:'Not found'}); res.sendFile(path.join(dist,'index.html')) })
+    app.get('/*splat', (req,res)=>{ if(req.path.startsWith('/api/')) return res.status(404).json({error:'Not found'}); res.sendFile(path.join(dist,'index.html')) })
   }
 }
 
