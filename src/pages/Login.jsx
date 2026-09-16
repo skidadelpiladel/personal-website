@@ -41,7 +41,7 @@ export default function Login() {
         <div className="bg-[#161618] border border-[#252529] rounded-[20px] p-7 md:p-8">
           <div className="w-10 h-10 rounded-xl bg-[#D97706] grid place-items-center text-[#0c0c0e] font-bold">◈</div>
           <h1 className="mt-4 font-display font-bold text-[22px] tracking-tight">Admin login</h1>
-          <p className="mt-1 text-sm text-[#9f9fa3]">Private — only you can edit. Credentials are checked server-side.</p>
+          <p className="mt-1 text-sm text-[#9f9fa3]">Private, only you can edit. Credentials are checked server-side.</p>
           <form onSubmit={submit} className="mt-6 space-y-4">
             <div>
               <label className="font-mono text-xs tracking-widest text-[#9f9fa3]">USERNAME</label>

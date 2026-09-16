@@ -13,6 +13,7 @@
 html {
   scrollbar-width: thin;
   scrollbar-color: #2a2a2e #0c0c0e;
+  scroll-padding-top: 72px;
 }
 
 body {
@@ -32,7 +33,7 @@ body {
 /* Selection */
 ::selection { background: #D97706; color: #fff; }
 
-/* Reveal animation — staggered, perf-safe */
+/* Reveal animation: staggered, perf-safe */
 .reveal {
   opacity: 0;
   transform: translateY(18px);
@@ -47,9 +48,20 @@ body {
 .reveal-delay-2 { transition-delay: 0.16s; }
 .reveal-delay-3 { transition-delay: 0.24s; }
 
-/* Hero entrance — disabled to restore layout (was hiding hero when animation failed) */
-.hero-enter { opacity: 1; animation: none; }
-.hero-enter-1, .hero-enter-2, .hero-enter-3, .hero-enter-4 { animation: none; opacity: 1; transform: none; }
+/* Hero entrance: subtle stagger on initial load */
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero-enter {
+  opacity: 0;
+  animation: heroIn 0.55s cubic-bezier(0.16,1,0.3,1) forwards;
+  will-change: transform, opacity;
+}
+.hero-enter-1 { animation-delay: 0.05s; }
+.hero-enter-2 { animation-delay: 0.14s; }
+.hero-enter-3 { animation-delay: 0.24s; }
+.hero-enter-4 { animation-delay: 0.34s; }
 
 /* Subtle grid drift */
 @keyframes gridDrift {
@@ -74,6 +86,17 @@ body {
 }
 .project-card:hover .card-arrow { transform: translateX(4px); }
 .card-arrow { transition: transform 0.35s cubic-bezier(0.16,1,0.3,1); }
+.project-card img {
+  transition: transform 0.55s cubic-bezier(0.16,1,0.3,1);
+  will-change: transform;
+}
+.project-card:hover img {
+  transform: scale(1.04);
+}
+@media (hover: none) {
+  .project-card:hover { transform: none; }
+  .project-card:hover img { transform: none; }
+}
 
 /* Nav link underline micro */
 .nav-link { position: relative; }
@@ -83,15 +106,37 @@ body {
 .nav-link:hover::after { width:100%; }
 
 /* Button press / hover */
-.btn-press { transition: transform 0.15s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease; }
-.btn-press:active { transform: scale(0.98); }
+.btn-press {
+  transition: transform 0.18s cubic-bezier(0.16,1,0.3,1), box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+.btn-press:hover { transform: translateY(-1px); }
+.btn-press:active { transform: scale(0.98) translateY(0); }
+.btn-press:focus-visible {
+  outline: 2px solid #D97706;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(217,119,6,0.15);
+}
 .btn-primary:hover { box-shadow: 0 8px 20px rgba(217,119,6,0.25); transform: translateY(-1px); }
 .btn-primary:active { transform: scale(0.98); }
+
+/* Skill / tag hover: subtle lift + border */
+.tag-hover {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.22s cubic-bezier(0.16,1,0.3,1);
+}
+.tag-hover:hover {
+  background-color: #1a1a1e;
+  border-color: #3a3a3e;
+  color: #fafaf9;
+  transform: translateY(-1px);
+}
+@media (hover: none) {
+  .tag-hover:hover { transform: none; background-color: #0c0c0e; }
+}
 
 /* Scroll progress bar */
 .scroll-progress { position: fixed; top:0; left:0; height:1px; background: #D97706; transform-origin: left; z-index: 60; opacity:0.9; }
 
-/* Cursor ambient light — desktop only, very subtle */
+/* Cursor ambient light: desktop only, very subtle */
 .cursor-light {
   position: fixed; top:0; left:0; width:720px; height:720px; pointer-events:none; z-index: 1;
   background: radial-gradient(circle at center, rgba(217,119,6,0.07), transparent 65%);
@@ -118,7 +163,17 @@ body {
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .reveal, .hero-enter, .grid-drift, .blink, .project-card, .btn-press { animation: none !important; transition: none !important; transform: none !important; }
+  html { scroll-behavior: auto; }
+  * { scroll-behavior: auto !important; }
+  .reveal, .hero-enter, .hero-enter-1, .hero-enter-2, .hero-enter-3, .hero-enter-4,
+  .grid-drift, .blink, .project-card, .btn-press, .tag-hover, .nav-link::after,
+  .project-card img, .card-arrow, .cursor-light, .scroll-progress, .parallax {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+  .reveal { opacity: 1 !important; }
+  .hero-enter { opacity: 1 !important; }
   .cursor-light { display:none !important; }
   .scroll-progress { display:none; }
 }

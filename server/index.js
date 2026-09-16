@@ -64,10 +64,10 @@ app.use(express.urlencoded({ extended: true, limit: '200kb' }))
 const RAW_SESSION_SECRET = (process.env.SESSION_SECRET || '').trim()
 const SESSION_SECRET_VALID = RAW_SESSION_SECRET.length >= 32
 if (!SESSION_SECRET_VALID) {
-  console.error('SESSION_SECRET must be >=32 chars in .env — auth will return JSON 500 until fixed')
+  console.error('SESSION_SECRET must be >=32 chars in .env: auth will return JSON 500 until fixed')
   // Fail hard in production (including Vercel). No predictable fallback.
   if (isProd || process.env.VERCEL) {
-    console.error('FATAL: missing SESSION_SECRET in production — refusing to start with insecure fallback')
+    console.error('FATAL: missing SESSION_SECRET in production: refusing to start with insecure fallback')
     process.exit(1)
   }
 }
@@ -77,7 +77,7 @@ const SESSION_SECRET_EFFECTIVE = SESSION_SECRET_VALID
   : crypto.randomBytes(64).toString('hex')
 
 if (!SESSION_SECRET_VALID && !isProd && !process.env.VERCEL) {
-  console.warn('WARNING: using ephemeral random SESSION_SECRET for development only — set SESSION_SECRET in .env for persistence')
+  console.warn('WARNING: using ephemeral random SESSION_SECRET for development only: set SESSION_SECRET in .env for persistence')
 }
 
 const sessionCookieName = isProd ? '__Host-portfolio.sid' : 'portfolio.sid'
@@ -198,13 +198,13 @@ app.get('/api/auth/me', (req,res)=> {
 })
 app.post('/api/auth/login', loginLimiter, body('username').isString().trim().isLength({min:1,max:64}), body('password').isString().isLength({min:1,max:128}), async (req,res)=>{
   try{
-    if(!SESSION_SECRET_VALID) return res.status(500).json({error:'Server misconfigured — missing SESSION_SECRET (≥32 chars) in env'})
+    if(!SESSION_SECRET_VALID) return res.status(500).json({error:'Server misconfigured: missing SESSION_SECRET (≥32 chars) in env'})
     const err=validationResult(req); if(!err.isEmpty()) return res.status(400).json({error:'Invalid input'})
     const {username,password}=req.body
     const expU=(process.env.ADMIN_USERNAME||'').trim(), expH=(process.env.ADMIN_PASSWORD_HASH||'').trim()
-    if(!expU||!expH) return res.status(500).json({error:'Server misconfigured — set ADMIN_USERNAME and ADMIN_PASSWORD_HASH in env'})
+    if(!expU||!expH) return res.status(500).json({error:'Server misconfigured: set ADMIN_USERNAME and ADMIN_PASSWORD_HASH in env'})
     // validate hash looks like bcrypt (avoid plaintext causing bcrypt throw → 500 Internal error)
-    if(!/^\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}$/.test(expH)) return res.status(500).json({error:'Server misconfigured — ADMIN_PASSWORD_HASH must be bcrypt hash (use npm run hash)'})
+    if(!/^\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}$/.test(expH)) return res.status(500).json({error:'Server misconfigured: ADMIN_PASSWORD_HASH must be bcrypt hash (use npm run hash)'})
     // ensure JSON content-type for all branches
     res.type('application/json')
     if(username!==expU){ try{ await bcrypt.compare(password,expH) }catch{}; return res.status(401).json({error:'Invalid credentials'}) }
@@ -258,7 +258,7 @@ app.put('/api/portfolio', requireAuth, requireCsrf, writeLimiter, (req,res)=>{
   }catch(e){ console.error(e); res.status(500).json({error:'Save failed'}) }
 })
 
-// --- upload (protected, validated) — SVG removed ---
+// --- upload (protected, validated): SVG removed ---
 const storage=multer.diskStorage({ destination:(req,file,cb)=>cb(null,UPLOAD_DIR), filename:(req,file,cb)=>{ const ext=path.extname(file.originalname).toLowerCase(); const base=path.basename(file.originalname,ext).replace(/[^a-z0-9_-]/gi,'').slice(0,20)||'img'; cb(null, `${Date.now()}-${crypto.randomBytes(4).toString('hex')}-${base}${ext}`)} })
 const ALLOWED=new Set(['image/jpeg','image/png','image/webp','image/gif'])
 const ALLOWED_EXT=new Set(['.jpg','.jpeg','.png','.webp','.gif'])
@@ -316,7 +316,7 @@ let vite
 if(!isProd){
   const { createServer: createViteServer } = await import('vite')
   vite = await createViteServer({ server:{ middlewareMode:true }, appType:'spa' })
-  // server-side guard for /admin HTML — do not rely on frontend hiding
+  // server-side guard for /admin HTML: do not rely on frontend hiding
   app.use((req,res,next)=>{
     if(req.path.startsWith('/admin') && !req.session.user){
       // for API already 401s; for page, redirect to login (server-side)
@@ -329,7 +329,7 @@ if(!isProd){
 } else {
   const dist=path.join(ROOT,'dist')
   if(fs.existsSync(dist)){
-    app.use('/admin', (req,res,next)=>{ if(!req.session.user) return res.status(401).send('Unauthorized — <a href="/login">login</a>'); next() })
+    app.use('/admin', (req,res,next)=>{ if(!req.session.user) return res.status(401).send('Unauthorized: <a href="/login">login</a>'); next() })
     app.use(express.static(dist, { dotfiles:'deny', index:false, maxAge:'1d', setHeaders(res){ res.setHeader('X-Content-Type-Options','nosniff') } }))
     app.get('/*splat', (req,res)=>{ if(req.path.startsWith('/api/')) return res.status(404).json({error:'Not found'}); res.sendFile(path.join(dist,'index.html')) })
   }
@@ -342,11 +342,11 @@ app.use((err,req,res,next)=>{
   }
   if(err instanceof multer.MulterError) return res.status(400).json({error: err.code==='LIMIT_FILE_SIZE'?'File too large (max 2MB)':'Upload error'})
   if(err.message==='Invalid file type'||err.message==='Invalid extension'||err.message==='Invalid filename'||err.message==='Invalid file content') return res.status(400).json({error:err.message})
-  // always JSON, never HTML — include request path for debugging without leaking secrets
+  // always JSON, never HTML: include request path for debugging without leaking secrets
   if(!res.headersSent) res.status(err.status||500).json({error: err.expose ? err.message : 'Internal error', path: req.path})
 })
 
 export default app
 if (!process.env.VERCEL) {
-  app.listen(PORT, ()=> console.log(`Server http://localhost:${PORT} env=${process.env.NODE_ENV} — /login public, /admin server-protected`))
+  app.listen(PORT, ()=> console.log(`Server http://localhost:${PORT} env=${process.env.NODE_ENV}: /login public, /admin server-protected`))
 }

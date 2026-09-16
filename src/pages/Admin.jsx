@@ -96,7 +96,7 @@ export default function Admin(){
           <Link to="/" className="flex items-center gap-2">
             <span className="w-8 h-8 rounded-lg bg-[#D97706] text-[#0c0c0e] grid place-items-center font-bold">◈</span>
             <span className="font-display font-semibold text-sm hidden sm:inline">Admin</span>
-            <span className="hidden sm:inline font-mono text-xs text-[#6b6b6e]">— private</span>
+            <span className="hidden sm:inline font-mono text-xs text-[#6b6b6e]">, private</span>
           </Link>
           <div className="ml-auto flex items-center gap-2">
             <span className={`hidden sm:inline-flex items-center gap-1.5 font-mono text-xs px-2.5 py-1 rounded-full border ${dirty?'bg-amber-500/10 border-amber-500/20 text-amber-300':'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'}`}>{dirty?'● Unsaved':'✓ Saved'}</span>
@@ -118,7 +118,7 @@ export default function Admin(){
             <div className="space-y-5">
               <div className="bg-[#161618] border border-[#252529] rounded-[20px] p-6">
                 <h2 className="font-display font-semibold text-lg">Dashboard</h2>
-                <p className="text-sm text-[#9f9fa3] mt-1">Edit without code. Changes persist to <span className="font-mono text-xs bg-[#0c0c0e] border border-[#252529] px-1.5 py-0.5 rounded">server/data/portfolio.json</span> — server validates & checks CSRF. Press <span className="font-mono text-xs bg-[#0c0c0e] border border-[#252529] px-1 py-0.5 rounded">Ctrl+S</span> to save.</p>
+                <p className="text-sm text-[#9f9fa3] mt-1">Edit without code. Changes persist to <span className="font-mono text-xs bg-[#0c0c0e] border border-[#252529] px-1.5 py-0.5 rounded">server/data/portfolio.json</span>. Server validates and checks CSRF. Press <span className="font-mono text-xs bg-[#0c0c0e] border border-[#252529] px-1 py-0.5 rounded">Ctrl+S</span> to save.</p>
                 <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
                   <button onClick={()=>setTab('edit')} className="text-left bg-[#0c0c0e] border border-[#252529] rounded-2xl p-4 hover:border-[#3a3a3e]">
                     <div className="w-8 h-8 rounded-lg bg-[#D97706] grid place-items-center text-[#0c0c0e]">✎</div>
@@ -183,7 +183,7 @@ export default function Admin(){
                     </div>
                   ))}
                 </div>
-                {data.whatIDo.length<6 && <button onClick={()=>setData({...data, whatIDo:[...data.whatIDo,{id:'new',label:'05 — New',title:'New',desc:'',tags:[],icon:'✦'}]})} className="mt-4 text-xs font-mono bg-[#0c0c0e] border border-[#252529] px-3 py-1.5 rounded-full">+ Add interest</button>}
+                {data.whatIDo.length<6 && <button onClick={()=>setData({...data, whatIDo:[...data.whatIDo,{id:'new',label:'05: New',title:'New',desc:'',tags:[],icon:'✦'}]})} className="mt-4 text-xs font-mono bg-[#0c0c0e] border border-[#252529] px-3 py-1.5 rounded-full">+ Add interest</button>}
               </div>
               <div className="bg-[#161618] border border-[#252529] rounded-[20px] p-6 space-y-3">
                 <h3 className="font-display font-semibold">Growth story</h3>
@@ -260,7 +260,7 @@ export default function Admin(){
                 <h3 className="font-display font-semibold">Highlights ({data.highlights.length})</h3>
                 <button onClick={()=>setData({...data, highlights:[...data.highlights,{title:'',org:'',date:'',desc:'',link:''}]})} className="bg-[#D97706] text-[#0c0c0e] font-semibold text-xs px-4 py-2 rounded-full">+ Add</button>
               </div>
-              {data.highlights.length===0 && <div className="bg-[#161618] border border-dashed border-[#252529] rounded-xl p-6 text-center text-sm text-[#9f9fa3]">No highlights — add awards/certificates.</div>}
+              {data.highlights.length===0 && <div className="bg-[#161618] border border-dashed border-[#252529] rounded-xl p-6 text-center text-sm text-[#9f9fa3]">No highlights: add awards/certificates.</div>}
               <div className="grid md:grid-cols-2 gap-4">
                 {data.highlights.map((h,idx)=>(
                   <div key={idx} className="bg-[#161618] border border-[#252529] rounded-[20px] p-4 space-y-3">
@@ -287,7 +287,7 @@ export default function Admin(){
                 <Field label="NOTE" value={data.contact.note} onChange={v=>setData({...data, contact:{...data.contact, note:v}})} textarea />
               </div>
               <div className="bg-[#161618] border border-[#D97706]/20 rounded-[20px] p-5">
-                <div className="font-mono text-xs tracking-widest text-[#D97706]">SECURITY — ENV ONLY</div>
+                <div className="font-mono text-xs tracking-widest text-[#D97706]">SECURITY: ENV ONLY</div>
                 <div className="font-display font-semibold mt-1 text-white">Secrets never in GitHub</div>
                 <div className="text-sm text-[#9f9fa3] mt-1">Change password: <span className="font-mono text-xs bg-[#0c0c0e] border border-[#252529] px-1.5 py-0.5 rounded">npm run hash newPass</span> → paste into <span className="font-mono text-xs bg-[#0c0c0e] border border-[#252529] px-1.5 py-0.5 rounded">.env ADMIN_PASSWORD_HASH</span> (gitignored via <span className="font-mono text-xs bg-[#0c0c0e] border border-[#252529] px-1.5 py-0.5 rounded">.gitignore:3</span>) → restart.</div>
               </div>

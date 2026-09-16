@@ -89,7 +89,7 @@ function Navbar() {
         <Link to="/" className="flex items-center gap-3">
           <span className="w-8 h-8 rounded-lg bg-[#D97706] text-[#0c0c0e] grid place-items-center font-mono text-sm font-bold">◈</span>
           <span className="font-display font-semibold tracking-tight text-[15px]">portfolio</span>
-          <span className="hidden sm:inline text-[#6b6b6e] font-mono text-xs ml-1">— quiet / steady</span>
+          <span className="hidden sm:inline text-[#6b6b6e] font-mono text-xs ml-1">, quiet / steady</span>
         </Link>
         <div className="hidden md:flex items-center gap-7">
           {links.map(([label, href]) => (
@@ -135,34 +135,34 @@ function Hero({ d }) {
       <div className="absolute top-20 -left-40 w-[600px] h-[600px] rounded-full blur-[120px] opacity-[0.05] pointer-events-none" style={{ background: "radial-gradient(circle, #38bdf8, transparent 70%)" }} />
       <div className="max-w-[1160px] mx-auto px-6 relative">
         <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-8 items-center">
-          <div className="reveal">
-            <div className="inline-flex items-center gap-2 text-xs font-mono tracking-widest text-[#9f9fa3] mb-4">
+          <div>
+            <div className="hero-enter hero-enter-1 inline-flex items-center gap-2 text-xs font-mono tracking-widest text-[#9f9fa3] mb-4">
               <span className="w-1.5 h-1.5 rounded-full bg-[#D97706] animate-pulse" />
               AVAILABLE FOR NEW PROJECTS & COLLABS
             </div>
-            <div className="font-mono text-sm tracking-wide text-[#9f9fa3] mb-2">Hi, I'm <span className="text-white font-semibold">{d.name}</span> —</div>
-            <h1 className="font-display font-bold tracking-[-0.04em] leading-[0.9] text-[42px] sm:text-[56px] lg:text-[68px]">
+            <div className="hero-enter hero-enter-1 font-mono text-sm tracking-wide text-[#9f9fa3] mb-2">Hi, I'm <span className="text-white font-semibold">{d.name}</span>,</div>
+            <h1 className="hero-enter hero-enter-2 font-display font-bold tracking-[-0.04em] leading-[0.9] text-[42px] sm:text-[56px] lg:text-[68px]">
               <span className="block text-white">I make</span>
               <span className="block text-white">stuff</span>
               <span className="block text-[#D97706]">and play</span>
               <span className="block text-[#D97706]">sports.</span>
             </h1>
-            <p className="mt-6 max-w-[520px] text-[16px] md:text-[17px] leading-7 text-[#9f9fa3]">{d.hero.subtitle}</p>
-            <div className="mt-6 inline-flex items-center gap-2.5 bg-[#161618] border border-[#252529] rounded-full px-3 py-2 pr-4">
+            <p className="hero-enter hero-enter-3 mt-6 max-w-[520px] text-[16px] md:text-[17px] leading-7 text-[#9f9fa3]">{d.hero.subtitle}</p>
+            <div className="hero-enter hero-enter-3 mt-6 inline-flex items-center gap-2.5 bg-[#161618] border border-[#252529] rounded-full px-3 py-2 pr-4">
               <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.6)]" />
               <span className="text-xs font-mono text-[#d4d4d8]">{d.hero.status}</span>
             </div>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a href="#projects" className="bg-[#D97706] text-[#0c0c0e] font-medium text-sm px-6 py-3 rounded-full hover:bg-[#E89A4D] transition-colors">View projects →</a>
-              <a href="#growth" className="bg-transparent border border-[#252529] text-white font-medium text-sm px-6 py-3 rounded-full hover:bg-[#161618] transition-colors">My growth story</a>
+            <div className="hero-enter hero-enter-4 mt-8 flex flex-wrap gap-3">
+              <a href="#projects" className="btn-press bg-[#D97706] text-[#0c0c0e] font-medium text-sm px-6 py-3 rounded-full hover:bg-[#E89A4D] transition-colors">View projects →</a>
+              <a href="#growth" className="btn-press bg-transparent border border-[#252529] text-white font-medium text-sm px-6 py-3 rounded-full hover:bg-[#161618] transition-colors">My growth story</a>
             </div>
-            <div className="mt-8 flex items-center gap-6 text-xs font-mono text-[#6b6b6e]">
+            <div className="hero-enter hero-enter-4 mt-8 flex items-center gap-6 text-xs font-mono text-[#6b6b6e]">
               <span className="flex items-center gap-2"><span className="w-4 h-px bg-[#2a2a2e]" /> Arduino</span>
               <span className="flex items-center gap-2"><span className="w-4 h-px bg-[#2a2a2e]" /> Basketball</span>
               <span className="flex items-center gap-2"><span className="w-4 h-px bg-[#2a2a2e]" /> Football</span>
             </div>
           </div>
-          <div className="reveal reveal-delay-1 lg:pl-4">
+          <div className="hero-enter hero-enter-2 lg:pl-4">
             <div className="relative bg-[#161618] border border-[#252529] rounded-[20px] overflow-hidden">
               <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#252529] bg-[#111113]">
                 <div className="flex items-center gap-1.5">
@@ -170,7 +170,7 @@ function Hero({ d }) {
                   <span className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-black/10" />
                   <span className="w-3 h-3 rounded-full bg-[#27c93f] border border-black/10" />
                 </div>
-                <span className="font-mono text-[11px] tracking-widest text-[#6b6b6e]">BUILD_LOG — progress.tsx</span>
+                <span className="font-mono text-[11px] tracking-widest text-[#6b6b6e]">BUILD_LOG: progress.tsx</span>
                 <span className="font-mono text-[11px] text-[#6b6b6e] hidden sm:inline">● live</span>
               </div>
               <div className="p-5 sm:p-6">
@@ -237,7 +237,7 @@ function About({ d }) {
             </h2>
             <div className="mt-8 flex flex-wrap gap-2">
               {d.about.traits.map((t) => (
-                <span key={t} className="text-xs font-mono tracking-wide px-3 py-2 rounded-full bg-[#161618] border border-[#252529] text-[#d4d4d8]">
+                <span key={t} className="tag-hover text-xs font-mono tracking-wide px-3 py-2 rounded-full bg-[#161618] border border-[#252529] text-[#d4d4d8]">
                   {t}
                 </span>
               ))}
@@ -251,7 +251,7 @@ function About({ d }) {
                     <span key={k} className="bg-[#0c0c0e] border border-[#252529] rounded-full px-3 py-1 text-xs font-medium">{k}</span>
                   ))}
                 </div>
-                <p className="mt-3 text-sm leading-6 text-[#9f9fa3]">Quiet at first — but I light up when I get to show what I'm building or learning.</p>
+                <p className="mt-3 text-sm leading-6 text-[#9f9fa3]">Quiet at first, but I light up when I get to show what I'm building or learning.</p>
               </div>
             </div>
           </div>
@@ -265,7 +265,7 @@ function About({ d }) {
               <div className="bg-[#161618] border border-[#252529] rounded-2xl p-5">
                 <div className="w-8 h-8 rounded-lg bg-[#0c0c0e] border border-[#252529] grid place-items-center text-sm">◈</div>
                 <div className="mt-3 font-medium text-sm">I like showing, not just telling</div>
-                <div className="mt-1 text-sm leading-6 text-[#9f9fa3]">If I'm excited about something I made, you'll know — I'll want to show you how it works.</div>
+                <div className="mt-1 text-sm leading-6 text-[#9f9fa3]">If I'm excited about something I made, you'll know, I'll want to show you how it works.</div>
               </div>
               <div className="bg-[#161618] border border-[#D97706]/20 rounded-2xl p-5">
                 <div className="font-mono text-xs tracking-widest text-[#D97706]">INDEPENDENCE</div>
@@ -289,7 +289,7 @@ function WhatIDo({ d }) {
             <SectionLabel num="02" label="WHAT I DO" />
             <h2 className="font-display font-bold tracking-[-0.03em] text-[32px] md:text-[42px] leading-none">Building.<br /><span className="text-[#D97706]">Playing.</span> Creating.</h2>
           </div>
-          <p className="max-w-[420px] text-sm leading-6 text-[#9f9fa3]">Four things I keep coming back to — not because I have to, but because I genuinely enjoy getting better at them.</p>
+          <p className="max-w-[420px] text-sm leading-6 text-[#9f9fa3]">Four things I keep coming back to, not because I have to, but because I genuinely enjoy getting better at them.</p>
         </div>
         <div className="mt-10 grid md:grid-cols-2 gap-5">
           {d.whatIDo.map((card, i) => (
@@ -303,7 +303,7 @@ function WhatIDo({ d }) {
               <p className="mt-3 text-sm leading-6 text-[#9f9fa3]">{card.desc}</p>
               <div className="mt-5 flex flex-wrap gap-2">
                 {card.tags.map((t) => (
-                  <span key={t} className="font-mono text-[11px] tracking-wide px-2.5 py-1 rounded-full bg-[#0c0c0e] border border-[#252529] text-[#9f9fa3]">{t}</span>
+                  <span key={t} className="tag-hover font-mono text-[11px] tracking-wide px-2.5 py-1 rounded-full bg-[#0c0c0e] border border-[#252529] text-[#9f9fa3]">{t}</span>
                 ))}
               </div>
             </div>
@@ -321,7 +321,7 @@ function Strengths({ d }) {
         <div className="reveal max-w-[720px]">
           <SectionLabel num="03" label="STRENGTHS" />
           <h2 className="font-display font-bold tracking-[-0.03em] text-[32px] md:text-[42px] leading-none">Not buzzwords. <br /><span className="text-[#9f9fa3]">Just how I work.</span></h2>
-          <p className="mt-4 text-sm leading-6 text-[#9f9fa3]">These aren't things I put on a slide — they're patterns in how I actually approach projects, practice, and ideas.</p>
+          <p className="mt-4 text-sm leading-6 text-[#9f9fa3]">These aren't things I put on a slide, they're patterns in how I actually approach projects, practice, and ideas.</p>
         </div>
         <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           {d.strengths.map((s, i) => (
@@ -375,7 +375,7 @@ function Growth({ d }) {
           </div>
           <div className="reveal reveal-delay-1 space-y-5">
             <div className="bg-[#161618] border border-[#252529] rounded-[20px] p-6">
-              <div className="font-mono text-xs tracking-widest text-[#6b6b6e]">FOOTWORK — VISUAL</div>
+              <div className="font-mono text-xs tracking-widest text-[#6b6b6e]">FOOTWORK: VISUAL</div>
               <div className="mt-4 relative bg-[#0c0c0e] border border-[#252529] rounded-2xl p-5 overflow-hidden">
                 <div className="relative h-[220px] rounded-xl border border-[#2a2a2e] bg-[#111113] overflow-hidden">
                   <div className="absolute inset-3 border border-[#2a2a2e] rounded-lg" />
@@ -426,7 +426,7 @@ function Projects({ d }) {
           <div>
             <SectionLabel num="05" label="PROJECTS" />
             <h2 className="font-display font-bold tracking-[-0.03em] text-[32px] md:text-[42px] leading-none">Things I've <span className="text-[#D97706]">built.</span></h2>
-            <p className="mt-3 text-sm leading-6 text-[#9f9fa3] max-w-[520px]">Arduino and experiments — now editable from your private admin.</p>
+            <p className="mt-3 text-sm leading-6 text-[#9f9fa3] max-w-[520px]">Arduino and experiments, now editable from your private admin.</p>
           </div>
           <a href="#contact" className="hidden md:inline-flex text-sm font-mono tracking-wide text-[#9f9fa3] hover:text-white group">Have an idea? Let's talk <span className="card-arrow inline-block">→</span></a>
         </div>
@@ -457,12 +457,12 @@ function Projects({ d }) {
                 <p className="mt-2 text-sm leading-6 text-[#9f9fa3] flex-1">{p.desc}</p>
                 <div className="mt-4 flex flex-wrap gap-1.5">
                   {p.tech.map((t) => (
-                    <span key={t} className="font-mono text-[11px] px-2.5 py-1 rounded-full bg-[#0c0c0e] border border-[#252529] text-[#9f9fa3]">{t}</span>
+                    <span key={t} className="tag-hover font-mono text-[11px] px-2.5 py-1 rounded-full bg-[#0c0c0e] border border-[#252529] text-[#9f9fa3]">{t}</span>
                   ))}
                 </div>
                 <div className="mt-4 flex gap-2">
-                  {p.links.github && p.links.github !== "#" && p.links.github.trim() !== "" ? <a href={p.links.github} target="_blank" rel="noreferrer" className="btn-press flex-1 bg-white text-[#0c0c0e] text-center text-xs font-semibold py-2.5 rounded-full hover:bg-[#D97706] transition-colors">GitHub <span className="card-arrow inline-block">↗</span></a> : <span className="flex-1 bg-[#1e1e20] border border-[#252529] text-[#6b6b6e] text-center text-xs font-semibold py-2.5 rounded-full">GitHub — add in Admin</span>}
-                  {p.links.demo && p.links.demo !== "#" && p.links.demo.trim() !== "" ? <a href={p.links.demo} target="_blank" rel="noreferrer" className="btn-press flex-1 bg-transparent border border-[#252529] text-white text-center text-xs font-semibold py-2.5 rounded-full hover:bg-[#0c0c0e] hover:border-[#3a3a3e] transition-colors">Demo <span className="card-arrow inline-block">→</span></a> : <span className="flex-1 bg-transparent border border-dashed border-[#252529] text-[#6b6b6e] text-center text-xs font-semibold py-2.5 rounded-full">Demo — soon</span>}
+                  {p.links.github && p.links.github !== "#" && p.links.github.trim() !== "" ? <a href={p.links.github} target="_blank" rel="noreferrer" className="btn-press flex-1 bg-white text-[#0c0c0e] text-center text-xs font-semibold py-2.5 rounded-full hover:bg-[#D97706] transition-colors">GitHub <span className="card-arrow inline-block">↗</span></a> : <span className="flex-1 bg-[#1e1e20] border border-[#252529] text-[#6b6b6e] text-center text-xs font-semibold py-2.5 rounded-full">GitHub: add in Admin</span>}
+                  {p.links.demo && p.links.demo !== "#" && p.links.demo.trim() !== "" ? <a href={p.links.demo} target="_blank" rel="noreferrer" className="btn-press flex-1 bg-transparent border border-[#252529] text-white text-center text-xs font-semibold py-2.5 rounded-full hover:bg-[#0c0c0e] hover:border-[#3a3a3e] transition-colors">Demo <span className="card-arrow inline-block">→</span></a> : <span className="flex-1 bg-transparent border border-dashed border-[#252529] text-[#6b6b6e] text-center text-xs font-semibold py-2.5 rounded-full">Demo: soon</span>}
                 </div>
               </div>
             </div>
@@ -481,7 +481,7 @@ function Goals({ d }) {
           <div className="reveal">
             <SectionLabel num="06" label="WHAT'S NEXT" />
             <h2 className="font-display font-bold tracking-[-0.03em] text-[32px] md:text-[42px] leading-none">Not figured out.<br /><span className="text-[#D97706]">Still becoming.</span></h2>
-            <p className="mt-4 text-sm leading-6 text-[#9f9fa3]">I don't have every answer yet — and that's the point. I'm focused on getting better at what I care about and seeing how far I can take it.</p>
+            <p className="mt-4 text-sm leading-6 text-[#9f9fa3]">I don't have every answer yet, and that's the point. I'm focused on getting better at what I care about and seeing how far I can take it.</p>
             <div className="mt-8 bg-[#161618] border border-[#D97706]/20 rounded-[20px] p-6">
               <div className="font-mono text-xs tracking-[0.16em] text-[#D97706]">THE LOOP</div>
               <div className="mt-3 font-display font-bold text-[28px] tracking-[-0.03em] leading-none text-white">Learn → Build →<br />Improve → Repeat</div>
@@ -520,7 +520,7 @@ function Highlights({ d }) {
             <SectionLabel num="07" label="HIGHLIGHTS" />
             <h2 className="font-display font-bold tracking-[-0.03em] text-[32px] md:text-[42px] leading-none">Highlights &<br /><span className="text-[#9f9fa3]">achievements.</span></h2>
           </div>
-          <p className="max-w-[420px] text-sm leading-6 text-[#9f9fa3]">This space is ready for awards, competitions, certificates, and sports moments — only when you have them. No filler, no fake entries.</p>
+          <p className="max-w-[420px] text-sm leading-6 text-[#9f9fa3]">This space is ready for awards, competitions, certificates, and sports moments, only when you have them. No filler, no fake entries.</p>
         </div>
         {has ? (
           <div className="mt-10 grid md:grid-cols-3 gap-4">
@@ -537,7 +537,7 @@ function Highlights({ d }) {
           <div className="reveal mt-10 bg-[#161618] border border-[#252529] rounded-[20px] p-8 md:p-10">
             <div className="max-w-[680px]">
               <div className="inline-flex items-center gap-2 font-mono text-xs tracking-widest text-[#6b6b6e]">
-                <span className="w-2 h-2 rounded-full bg-[#D97706]" /> NOTHING FABRICATED — READY WHEN YOU ARE
+                <span className="w-2 h-2 rounded-full bg-[#D97706]" /> NOTHING FABRICATED: READY WHEN YOU ARE
               </div>
               <h3 className="mt-4 font-display font-semibold text-[20px]">No made-up awards here.</h3>
               <p className="mt-2 text-sm leading-6 text-[#9f9fa3]">This section is intentionally empty until you add real highlights. Add them privately in Admin → Highlights.</p>
@@ -594,7 +594,7 @@ function Personal({ d }) {
           <div className="flex items-center gap-3">
             <span className="w-10 h-10 rounded-xl bg-[#0c0c0e] border border-[#252529] grid place-items-center">◍</span>
             <div>
-              <div className="font-medium text-sm">Resilience — without the cheesy story</div>
+              <div className="font-medium text-sm">Resilience: without the cheesy story</div>
               <div className="text-sm leading-6 text-[#9f9fa3]">I haven't written a dramatic backstory, and I'm not going to invent one. Growth for me is quieter: keep showing up, learn from setbacks, try again.</div>
             </div>
           </div>
@@ -622,13 +622,13 @@ function Footer({ d }) {
           <div className="bg-[#161618] border border-[#252529] rounded-[20px] p-6 md:p-7">
             <div className="font-mono text-xs tracking-widest text-[#6b6b6e]">CONTACT</div>
             <div className="mt-4 space-y-3">
-              {d.contact.email && d.contact.email.trim() !== "" ? <a href={`mailto:${d.contact.email}`} className="flex items-center justify-between bg-[#0c0c0e] border border-[#252529] rounded-2xl px-4 py-3 hover:border-[#3a3a3e] transition-colors"><span className="flex items-center gap-3"><span className="w-8 h-8 rounded-lg bg-[#D97706] grid place-items-center text-[#0c0c0e] text-sm">✉</span><span className="text-sm font-medium">{d.contact.email}</span></span><span className="text-[#6b6b6e]">↗</span></a> : <div className="bg-[#0c0c0e] border border-dashed border-[#252529] rounded-2xl px-4 py-3 flex items-center gap-3 text-sm text-[#6b6b6e]"><span className="w-8 h-8 rounded-lg bg-[#1e1e20] grid place-items-center">✉</span> No email yet — add in Admin → Settings</div>}
-              {d.contact.github && d.contact.github.trim() !== "" ? <a href={d.contact.github} target="_blank" rel="noreferrer" className="flex items-center justify-between bg-[#0c0c0e] border border-[#252529] rounded-2xl px-4 py-3 hover:border-[#3a3a3e] transition-colors"><span className="flex items-center gap-3"><span className="w-8 h-8 rounded-lg bg-[#0c0c0e] border border-[#252529] grid place-items-center text-sm">⬡</span><span className="text-sm font-medium">GitHub</span></span><span className="text-[#6b6b6e]">↗</span></a> : <div className="bg-[#0c0c0e] border border-dashed border-[#252529] rounded-2xl px-4 py-3 flex items-center gap-3 text-sm text-[#6b6b6e]"><span className="w-8 h-8 rounded-lg bg-[#1e1e20] grid place-items-center">⬡</span> No GitHub yet — add in Admin</div>}
+              {d.contact.email && d.contact.email.trim() !== "" ? <a href={`mailto:${d.contact.email}`} className="flex items-center justify-between bg-[#0c0c0e] border border-[#252529] rounded-2xl px-4 py-3 hover:border-[#3a3a3e] transition-colors"><span className="flex items-center gap-3"><span className="w-8 h-8 rounded-lg bg-[#D97706] grid place-items-center text-[#0c0c0e] text-sm">✉</span><span className="text-sm font-medium">{d.contact.email}</span></span><span className="text-[#6b6b6e]">↗</span></a> : <div className="bg-[#0c0c0e] border border-dashed border-[#252529] rounded-2xl px-4 py-3 flex items-center gap-3 text-sm text-[#6b6b6e]"><span className="w-8 h-8 rounded-lg bg-[#1e1e20] grid place-items-center">✉</span> No email yet: add in Admin → Settings</div>}
+              {d.contact.github && d.contact.github.trim() !== "" ? <a href={d.contact.github} target="_blank" rel="noreferrer" className="flex items-center justify-between bg-[#0c0c0e] border border-[#252529] rounded-2xl px-4 py-3 hover:border-[#3a3a3e] transition-colors"><span className="flex items-center gap-3"><span className="w-8 h-8 rounded-lg bg-[#0c0c0e] border border-[#252529] grid place-items-center text-sm">⬡</span><span className="text-sm font-medium">GitHub</span></span><span className="text-[#6b6b6e]">↗</span></a> : <div className="bg-[#0c0c0e] border border-dashed border-[#252529] rounded-2xl px-4 py-3 flex items-center gap-3 text-sm text-[#6b6b6e]"><span className="w-8 h-8 rounded-lg bg-[#1e1e20] grid place-items-center">⬡</span> No GitHub yet: add in Admin</div>}
             </div>
           </div>
         </div>
         <div className="mt-12 pt-6 border-t border-[#1e1e20] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono tracking-wide text-[#6b6b6e]">
-          <span>© {new Date().getFullYear()} — Built with curiosity, practice, and iteration.</span>
+          <span>© {new Date().getFullYear()}. Built with curiosity, practice, and iteration.</span>
           <span className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-[#D97706]" />
             Learn → Build → Improve → Repeat

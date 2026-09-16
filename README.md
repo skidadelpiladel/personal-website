@@ -1,13 +1,13 @@
-# Personal Portfolio — Quiet Builder. Steady Improver.
+# Personal Portfolio: Quiet Builder. Steady Improver.
 
-Modern dark portfolio with **private editing system** — Vite + React + Tailwind 4 + Express.
+Modern dark portfolio with **private editing system**, Vite + React + Tailwind 4 + Express.
 
 ## Quick start
 
 ```bash
 npm install
 # set secrets (first time)
-# .env already contains dev defaults — see .env.example
+# .env already contains dev defaults, see .env.example
 # generate your own password hash:
 npm run hash your_new_password
 
@@ -29,13 +29,13 @@ npm start          # serves dist via Express on PORT (default 3001)
 
 ## Public site
 
-- `/` — portfolio (fetches `/api/portfolio`, falls back to `src/data.js` if server offline)
+- `/`: portfolio (fetches `/api/portfolio`, falls back to `src/data.js` if server offline)
 - No admin controls visible to visitors
 
 ## Private editing
 
-- `/login` — admin login (server-side session, bcrypt, rate-limited)
-- `/admin` — dashboard with tabs: Overview / Portfolio / Projects / Highlights / Contact
+- `/login`: admin login (server-side session, bcrypt, rate-limited)
+- `/admin`: dashboard with tabs: Overview / Portfolio / Projects / Highlights / Contact
 
 What you can edit without code:
 - Name, hero subtitle/status, about paragraphs/traits
@@ -48,13 +48,13 @@ Changes save to `server/data/portfolio.json` via `PUT /api/portfolio` (auth + CS
 ### Default credentials (dev)
 
 - Username: `admin`
-- Password: `Admin123!`  — hash in `.env` → `ADMIN_PASSWORD_HASH`
+- Password: `Admin123!`: hash in `.env` → `ADMIN_PASSWORD_HASH`
 - Change immediately: `npm run hash MyStrongPass123!` → copy hash to `.env` → restart server
 
 ## Security architecture
 
 - **Stack**: Express 5, express-session (httpOnly, SameSite=strict, Secure via `COOKIE_SECURE`), bcryptjs, helmet, CORS, express-rate-limit, multer, express-validator
-- **Secrets**: never in frontend — `SESSION_SECRET`, `ADMIN_USERNAME`, `ADMIN_PASSWORD_HASH` in `.env` (gitignored, see `.env.example`)
+- **Secrets**: never in frontend: `SESSION_SECRET`, `ADMIN_USERNAME`, `ADMIN_PASSWORD_HASH` in `.env` (gitignored, see `.env.example`)
 - **Auth**: `POST /api/auth/login` validates via `bcrypt.compare`, regenerates session (fixation protection), stores `req.session.user`; `GET /api/auth/me` checks session; `POST /api/auth/logout` requires auth+CSRF
 - **CSRF**: per-session token via `GET /api/csrf-token`; client sends `x-csrf-token` header; server middleware `requireCsrf` checks for all mutating routes
 - **Rate limit**: login 10 / 15min per IP
@@ -65,14 +65,14 @@ Changes save to `server/data/portfolio.json` via `PUT /api/portfolio` (auth + CS
 
 ## Files
 
-- `server/index.js` — Express + security middleware + API + upload + prod static serving
-- `server/data/portfolio.json` — persisted portfolio (editable via admin, not via code)
-- `server/scripts/generate-hash.js` — `node server/scripts/generate-hash.js <pwd>`
-- `src/data.js` — static fallback for offline dev
-- `src/lib/api.js` — CSRF-aware fetch helpers
-- `src/pages/Login.jsx` / `src/pages/Admin.jsx` — private UI (responsive, forms, not shown publicly)
-- `src/App.jsx` — public portfolio (data-driven, `usePortfolio` fetches `/api/portfolio`)
-- `vite.config.js` — proxies `/api` + `/uploads` to server in dev
+- `server/index.js`: Express + security middleware + API + upload + prod static serving
+- `server/data/portfolio.json`: persisted portfolio (editable via admin, not via code)
+- `server/scripts/generate-hash.js`: `node server/scripts/generate-hash.js <pwd>`
+- `src/data.js`: static fallback for offline dev
+- `src/lib/api.js`: CSRF-aware fetch helpers
+- `src/pages/Login.jsx` / `src/pages/Admin.jsx`: private UI (responsive, forms, not shown publicly)
+- `src/App.jsx`: public portfolio (data-driven, `usePortfolio` fetches `/api/portfolio`)
+- `vite.config.js`: proxies `/api` + `/uploads` to server in dev
 
 ## Design
 
