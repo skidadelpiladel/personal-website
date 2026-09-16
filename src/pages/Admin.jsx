@@ -245,7 +245,7 @@ export default function Admin(){
                     <div>
                       <span className="font-mono text-[11px] tracking-[0.16em] text-[#9f9fa3]">IMAGE</span>
                       {p.image && <img src={p.image} alt="" className="mt-1.5 w-full h-32 object-cover rounded-xl border border-[#252529]" />}
-                      <input type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml" onChange={e=>upload(e.target.files[0], url=>{ const a=[...data.projects]; a[idx]={...a[idx], image:url}; setData({...data, projects:a})})} className="mt-2 block text-xs file:bg-[#0c0c0e] file:border file:border-[#252529] file:rounded-full file:px-3 file:py-1 file:text-xs" />
+                      <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={e=>upload(e.target.files[0], url=>{ const a=[...data.projects]; a[idx]={...a[idx], image:url}; setData({...data, projects:a})})} className="mt-2 block text-xs file:bg-[#0c0c0e] file:border file:border-[#252529] file:rounded-full file:px-3 file:py-1 file:text-xs" />
                       <input value={p.image||''} onChange={e=>{ const a=[...data.projects]; a[idx]={...a[idx], image:e.target.value}; setData({...data, projects:a})}} placeholder="/uploads/… or https://…" className="mt-2 w-full bg-[#0c0c0e] border border-[#252529] rounded-xl px-3 py-2 text-xs font-mono focus:border-[#3a3a3e] outline-none" />
                     </div>
                   </div>

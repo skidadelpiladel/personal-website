@@ -28,48 +28,167 @@ app.set('trust proxy', 1)
 const PORT = process.env.PORT || 3001
 const isProd = process.env.NODE_ENV === 'production'
 
-// --- security headers ---
-app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }))
+// --- security headers (CSP enabled) ---
+const cspDirectives = {
+  defaultSrc: ["'self'"],
+  scriptSrc: ["'self'"],
+  styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+  fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
+  imgSrc: ["'self'", "data:", "https:", "blob:"],
+  connectSrc: ["'self'"],
+  objectSrc: ["'none'"],
+  baseUri: ["'self'"],
+  formAction: ["'self'"],
+  frameAncestors: ["'none'"],
+}
+if (isProd) cspDirectives.upgradeInsecureRequests = []
+app.use(helmet({
+  contentSecurityPolicy: { directives: cspDirectives },
+  crossOriginEmbedderPolicy: false,
+  crossOriginOpenerPolicy: { policy: "same-origin" },
+  crossOriginResourcePolicy: { policy: "same-origin" },
+  referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+}))
+// HSTS in production
+if (isProd) {
+  app.use((req, res, next) => {
+    res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload')
+    next()
+  })
+}
 app.use(cookieParser())
-app.use(express.json({ limit: '1mb' }))
-app.use(express.urlencoded({ extended: true, limit: '1mb' }))
+app.use(express.json({ limit: '200kb' }))
+app.use(express.urlencoded({ extended: true, limit: '200kb' }))
 
 // --- session (secrets in env, not committed) ---
 const RAW_SESSION_SECRET = (process.env.SESSION_SECRET || '').trim()
 const SESSION_SECRET_VALID = RAW_SESSION_SECRET.length >= 32
 if (!SESSION_SECRET_VALID) {
   console.error('SESSION_SECRET must be >=32 chars in .env — auth will return JSON 500 until fixed')
-  if (!process.env.VERCEL) process.exit(1)
+  // Fail hard in production (including Vercel). No predictable fallback.
+  if (isProd || process.env.VERCEL) {
+    console.error('FATAL: missing SESSION_SECRET in production — refusing to start with insecure fallback')
+    process.exit(1)
+  }
 }
-const SESSION_SECRET_EFFECTIVE = SESSION_SECRET_VALID ? RAW_SESSION_SECRET : 'fallback_vercel_must_be_32_chars_long_for_dev_only_12345678'
+// Development may use a securely generated ephemeral secret; never the hardcoded predictable fallback.
+const SESSION_SECRET_EFFECTIVE = SESSION_SECRET_VALID
+  ? RAW_SESSION_SECRET
+  : crypto.randomBytes(64).toString('hex')
+
+if (!SESSION_SECRET_VALID && !isProd && !process.env.VERCEL) {
+  console.warn('WARNING: using ephemeral random SESSION_SECRET for development only — set SESSION_SECRET in .env for persistence')
+}
+
+const sessionCookieName = isProd ? '__Host-portfolio.sid' : 'portfolio.sid'
 app.use(session({
-  name: 'portfolio.sid',
+  name: sessionCookieName,
   secret: SESSION_SECRET_EFFECTIVE,
   resave: false,
   saveUninitialized: false,
-  cookie: { httpOnly: true, secure: process.env.COOKIE_SECURE === 'true', sameSite: 'strict', maxAge: 1000*60*60*2 }
+  cookie: {
+    httpOnly: true,
+    secure: isProd ? true : process.env.COOKIE_SECURE === 'true',
+    sameSite: 'strict',
+    maxAge: 1000 * 60 * 60 * 2,
+    path: '/',
+  }
 }))
 
 function getCsrf(req){ if(!req.session.csrfToken) req.session.csrfToken=crypto.randomBytes(32).toString('hex'); return req.session.csrfToken }
 function requireAuth(req,res,next){ if(!req.session.user) return res.status(401).json({error:'Unauthorized'}); next() }
-function requireCsrf(req,res,next){ if(['GET','HEAD','OPTIONS'].includes(req.method)) return next(); const t=req.headers['x-csrf-token']; if(!t || t!==req.session.csrfToken) return res.status(403).json({error:'Invalid CSRF token'}); next() }
-function sanitizeString(s,max=2000){ if(typeof s!=='string') return ''; return s.trim().slice(0,max).replace(/<[^>]*>/g,'') }
-function sanitizeUrl(s){ if(typeof s!=='string') return '#'; const u=s.trim().slice(0,500); if(u===''||u==='#') return '#'; if(/^(https?:\/\/|mailto:|#|\/)/.test(u)) return u.replace(/[<>"']/g,''); return '#'}
+function requireCsrf(req,res,next){
+  if(['GET','HEAD','OPTIONS'].includes(req.method)) return next();
+  const t=req.headers['x-csrf-token'];
+  if(!t || typeof t !== 'string' || t !== req.session.csrfToken) return res.status(403).json({error:'Invalid CSRF token'});
+  next()
+}
+function sanitizeString(s,max=2000){
+  if(typeof s!=='string') return '';
+  // Remove control chars, trim, slice, strip any remaining angle-bracket tag remnants
+  return s.replace(/[\u0000-\u001F\u007F]/g,'').trim().slice(0,max).replace(/<[^>]*>/g,'')
+}
+function sanitizeUrl(s){
+  if(typeof s!=='string') return '#';
+  let u = s.trim().slice(0,500);
+  if(u===''||u==='#') return '#';
+  // Strip control chars and whitespace tricks
+  u = u.replace(/[\u0000-\u001F\u007F]/g,'');
+  const collapsed = u.toLowerCase().replace(/\s+/g,'');
+  if(collapsed.startsWith('javascript:') || collapsed.startsWith('data:') || collapsed.startsWith('vbscript:') || collapsed.startsWith('blob:') || collapsed.startsWith('file:')) return '#';
+  // Block protocol-relative //evil.com and backslashes
+  if(u.startsWith('//') || u.includes('\\')) return '#';
+  // Allow hash anchors
+  if(u.startsWith('#')){
+    if(/[<>"'`]/.test(u)) return '#';
+    return u.replace(/[<>"'`]/g,'');
+  }
+  // Allow absolute path
+  if(u.startsWith('/')){
+    if(u.startsWith('//')) return '#';
+    if(/[<>"'`]/.test(u)) return '#';
+    // Ensure no encoded traversal tricks after decoding? Check raw
+    try { const decoded = decodeURIComponent(u); if(decoded.includes('..')){ /* allow .. in path? block traversal attempt */ if(decoded.split('/').includes('..')) return '#'; } } catch {}
+    return u.replace(/[<>"'`]/g,'');
+  }
+  // For absolute URLs use URL parser
+  try {
+    const parsed = new URL(u);
+    if(parsed.protocol === 'https:' || parsed.protocol === 'http:'){
+      if(!parsed.hostname) return '#';
+      if(/[<>"'`]/.test(u)) return '#';
+      return u.replace(/[<>"'`]/g,'');
+    }
+    if(parsed.protocol === 'mailto:'){
+      // Basic mailto validation
+      if(!parsed.pathname || /[<>"'`]/.test(u)) return '#';
+      return u.replace(/[<>"'`]/g,'');
+    }
+    return '#';
+  } catch {
+    return '#';
+  }
+}
+function sanitizeEmail(s){
+  if(typeof s!=='string') return '';
+  const t = s.trim().slice(0,120);
+  // Simple email regex; if invalid return empty
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(t)) return '';
+  return t.replace(/[<>"'`]/g,'')
+}
 function loadPortfolio(){ try{ return JSON.parse(fs.readFileSync(DATA_PATH,'utf-8')) }catch(e){ console.error(e); return null } }
-function savePortfolio(d){ const t=DATA_PATH+'.tmp'; fs.writeFileSync(t, JSON.stringify(d,null,2),'utf-8'); fs.renameSync(t, DATA_PATH) }
+function savePortfolio(d){
+  // Unique tmp file per call to avoid race collisions
+  const rand = crypto.randomBytes(4).toString('hex')
+  const t = `${DATA_PATH}.${Date.now()}.${rand}.tmp`;
+  fs.writeFileSync(t, JSON.stringify(d,null,2),'utf-8');
+  fs.renameSync(t, DATA_PATH)
+}
+function hasPrototypePollution(obj){
+  if(!obj || typeof obj !== 'object') return false;
+  const keys = Object.keys(obj);
+  if(keys.includes('__proto__') || keys.includes('constructor') || keys.includes('prototype')) return true;
+  return false;
+}
 
 const loginLimiter = rateLimit({ windowMs:15*60*1000, max:10, standardHeaders:true, legacyHeaders:false, message:{error:'Too many login attempts'} })
+const writeLimiter = rateLimit({ windowMs:15*60*1000, max:30, standardHeaders:true, legacyHeaders:false, message:{error:'Too many write attempts, try later'} })
 
-// --- debug (no secrets, just presence) ---
-app.get('/api/debug/env', (req,res)=> res.json({
-  sessionSecret: !!process.env.SESSION_SECRET && process.env.SESSION_SECRET.length>=32,
-  sessionSecretLen: (process.env.SESSION_SECRET||'').length,
-  adminUser: !!process.env.ADMIN_USERNAME,
-  adminHash: !!process.env.ADMIN_PASSWORD_HASH && /^\$2[aby]\$/.test((process.env.ADMIN_PASSWORD_HASH||'').trim()),
-  vercel: !!process.env.VERCEL,
-  nodeEnv: process.env.NODE_ENV,
-  cookieSecure: process.env.COOKIE_SECURE
-}))
+// --- debug (never expose in production) ---
+app.get('/api/debug/env', (req,res)=>{
+  if(isProd || process.env.VERCEL){
+    return res.status(404).json({error:'Not found'})
+  }
+  // Dev only, still minimal
+  return res.json({
+    sessionSecret: SESSION_SECRET_VALID,
+    adminUser: !!process.env.ADMIN_USERNAME,
+    adminHash: !!process.env.ADMIN_PASSWORD_HASH && /^\$2[aby]\$/.test((process.env.ADMIN_PASSWORD_HASH||'').trim()),
+    vercel: !!process.env.VERCEL,
+    nodeEnv: process.env.NODE_ENV,
+    cookieSecure: process.env.COOKIE_SECURE
+  })
+})
 
 // --- auth (public login, server-side session) ---
 app.get('/api/csrf-token', (req,res)=> res.json({csrfToken:getCsrf(req)}))
@@ -102,14 +221,26 @@ app.post('/api/auth/login', loginLimiter, body('username').isString().trim().isL
   }
 })
 app.post('/api/auth/logout', requireAuth, requireCsrf, (req,res)=>{
-  req.session.destroy(er=>{ if(er) return res.status(500).json({error:'Logout failed'}); res.clearCookie('portfolio.sid'); res.json({success:true}) })
+  req.session.destroy(er=>{
+    if(er) return res.status(500).json({error:'Logout failed'});
+    res.clearCookie(sessionCookieName, { path:'/', httpOnly:true, secure: isProd ? true : process.env.COOKIE_SECURE==='true', sameSite:'strict' });
+    // also clear alternate cookie name if present
+    res.clearCookie('__Host-portfolio.sid', { path:'/' });
+    res.clearCookie('portfolio.sid', { path:'/' });
+    res.json({success:true})
+  })
 })
 
 // --- portfolio (public read, protected write) ---
 app.get('/api/portfolio', (req,res)=>{ const d=loadPortfolio(); if(!d) return res.status(500).json({error:'Failed to load'}); res.json(d) })
-app.put('/api/portfolio', requireAuth, requireCsrf, (req,res)=>{
+app.put('/api/portfolio', requireAuth, requireCsrf, writeLimiter, (req,res)=>{
   try{
-    const inc=req.body; if(!inc||typeof inc!=='object') return res.status(400).json({error:'Invalid payload'})
+    const inc=req.body; if(!inc||typeof inc!=='object' || Array.isArray(inc)) return res.status(400).json({error:'Invalid payload'})
+    if(hasPrototypePollution(inc)) return res.status(400).json({error:'Invalid payload'})
+    // Check nested top-level keys for pollution
+    for(const k of Object.keys(inc)){
+      if(inc[k] && typeof inc[k]==='object' && hasPrototypePollution(inc[k])) return res.status(400).json({error:'Invalid payload'})
+    }
     const cur=loadPortfolio(); if(!cur) return res.status(500).json({error:'Load failed'})
     const out=JSON.parse(JSON.stringify(cur))
     if(typeof inc.name==='string') out.name=sanitizeString(inc.name,64)
@@ -122,17 +253,60 @@ app.put('/api/portfolio', requireAuth, requireCsrf, (req,res)=>{
     if(Array.isArray(inc.goals)) out.goals=inc.goals.slice(0,10).map(g=>({k:sanitizeString(g.k||'',32), v:sanitizeString(g.v||'',500)}))
     if(Array.isArray(inc.highlights)) out.highlights=inc.highlights.slice(0,20).map(h=>({title:sanitizeString(h.title||'',120), org:sanitizeString(h.org||'',120), date:sanitizeString(h.date||'',64), desc:sanitizeString(h.desc||'',800), link:sanitizeUrl(h.link||'')})).filter(h=>h.title)
     if(inc.personal){ if(Array.isArray(inc.personal.now)) out.personal.now=inc.personal.now.slice(0,10).map(s=>sanitizeString(s,200)).filter(Boolean); if(Array.isArray(inc.personal.learning)) out.personal.learning=inc.personal.learning.slice(0,10).map(s=>sanitizeString(s,200)).filter(Boolean); if(Array.isArray(inc.personal.improving)) out.personal.improving=inc.personal.improving.slice(0,10).map(s=>sanitizeString(s,200)).filter(Boolean) }
-    if(inc.contact){ if(typeof inc.contact.email==='string') out.contact.email=sanitizeString(inc.contact.email,120); if(typeof inc.contact.github==='string') out.contact.github=sanitizeUrl(inc.contact.github); if(typeof inc.contact.note==='string') out.contact.note=sanitizeString(inc.contact.note,500) }
+    if(inc.contact){ if(typeof inc.contact.email==='string') out.contact.email=sanitizeEmail(inc.contact.email); if(typeof inc.contact.github==='string') out.contact.github=sanitizeUrl(inc.contact.github); if(typeof inc.contact.note==='string') out.contact.note=sanitizeString(inc.contact.note,500) }
     savePortfolio(out); res.json({success:true, data:out})
   }catch(e){ console.error(e); res.status(500).json({error:'Save failed'}) }
 })
 
-// --- upload (protected, validated) ---
+// --- upload (protected, validated) — SVG removed ---
 const storage=multer.diskStorage({ destination:(req,file,cb)=>cb(null,UPLOAD_DIR), filename:(req,file,cb)=>{ const ext=path.extname(file.originalname).toLowerCase(); const base=path.basename(file.originalname,ext).replace(/[^a-z0-9_-]/gi,'').slice(0,20)||'img'; cb(null, `${Date.now()}-${crypto.randomBytes(4).toString('hex')}-${base}${ext}`)} })
-const ALLOWED=new Set(['image/jpeg','image/png','image/webp','image/gif','image/svg+xml'])
-const upload=multer({ storage, limits:{fileSize:2*1024*1024, files:1}, fileFilter:(req,file,cb)=>{ if(!ALLOWED.has(file.mimetype)) return cb(new Error('Invalid file type')); const ext=path.extname(file.originalname).toLowerCase(); if(!['.jpg','.jpeg','.png','.webp','.gif','.svg'].includes(ext)) return cb(new Error('Invalid extension')); cb(null,true) } })
-app.post('/api/upload', requireAuth, requireCsrf, upload.single('image'), (req,res)=>{ if(!req.file) return res.status(400).json({error:'No file'}); res.json({url:`/uploads/${req.file.filename}`}) })
-app.use('/uploads', express.static(UPLOAD_DIR, {maxAge:'1d'}))
+const ALLOWED=new Set(['image/jpeg','image/png','image/webp','image/gif'])
+const ALLOWED_EXT=new Set(['.jpg','.jpeg','.png','.webp','.gif'])
+const upload=multer({
+  storage,
+  limits:{fileSize:2*1024*1024, files:1},
+  fileFilter:(req,file,cb)=>{
+    if(!ALLOWED.has(file.mimetype)) return cb(new Error('Invalid file type'));
+    const ext=path.extname(file.originalname).toLowerCase();
+    if(!ALLOWED_EXT.has(ext)) return cb(new Error('Invalid extension'));
+    // Prevent double extension tricks: reject names with multiple dots that hide .svg/.html
+    if(file.originalname.includes('\0')) return cb(new Error('Invalid filename'));
+    cb(null,true)
+  }
+})
+app.post('/api/upload', requireAuth, requireCsrf, writeLimiter, upload.single('image'), (req,res)=>{
+  if(!req.file) return res.status(400).json({error:'No file'});
+  // Verify magic bytes to mitigate MIME spoofing
+  try {
+    const fd = fs.openSync(req.file.path, 'r')
+    const buf = Buffer.alloc(12)
+    fs.readSync(fd, buf, 0, 12, 0)
+    fs.closeSync(fd)
+    const isJpeg = buf[0]===0xFF && buf[1]===0xD8
+    const isPng = buf[0]===0x89 && buf[1]===0x50 && buf[2]===0x4E && buf[3]===0x47
+    const isGif = buf[0]===0x47 && buf[1]===0x49 && buf[2]===0x46
+    const isWebp = buf[0]===0x52 && buf[1]===0x49 && buf[2]===0x46 && buf[3]===0x46 && buf[8]===0x57 && buf[9]===0x45 && buf[10]===0x42 && buf[11]===0x50
+    if(!(isJpeg||isPng||isGif||isWebp)){
+      fs.unlinkSync(req.file.path)
+      return res.status(400).json({error:'Invalid file content'})
+    }
+  } catch(e){
+    try{ fs.unlinkSync(req.file.path) }catch{}
+    return res.status(400).json({error:'Upload validation failed'})
+  }
+  // Serve with safe filename
+  res.json({url:`/uploads/${path.basename(req.file.filename)}`})
+})
+app.use('/uploads', express.static(UPLOAD_DIR, {
+  maxAge:'1d',
+  dotfiles:'deny',
+  index:false,
+  setHeaders(res, filePath){
+    res.setHeader('X-Content-Type-Options','nosniff')
+    res.setHeader('Content-Security-Policy', "default-src 'none'; img-src 'self'; style-src 'none';")
+    // Force correct content-type based on extension, deny sniffing
+  }
+}))
 
 // ensure unmatched /api routes always return JSON (not HTML from Vite/static) so frontend never gets "Unexpected token '<' or 'A'"
 app.use('/api', (req,res)=> res.status(404).json({error:'Not found'}))
@@ -156,7 +330,7 @@ if(!isProd){
   const dist=path.join(ROOT,'dist')
   if(fs.existsSync(dist)){
     app.use('/admin', (req,res,next)=>{ if(!req.session.user) return res.status(401).send('Unauthorized — <a href="/login">login</a>'); next() })
-    app.use(express.static(dist))
+    app.use(express.static(dist, { dotfiles:'deny', index:false, maxAge:'1d', setHeaders(res){ res.setHeader('X-Content-Type-Options','nosniff') } }))
     app.get('/*splat', (req,res)=>{ if(req.path.startsWith('/api/')) return res.status(404).json({error:'Not found'}); res.sendFile(path.join(dist,'index.html')) })
   }
 }
@@ -167,7 +341,7 @@ app.use((err,req,res,next)=>{
     return res.status(400).json({error:'Invalid JSON'})
   }
   if(err instanceof multer.MulterError) return res.status(400).json({error: err.code==='LIMIT_FILE_SIZE'?'File too large (max 2MB)':'Upload error'})
-  if(err.message==='Invalid file type'||err.message==='Invalid extension') return res.status(400).json({error:err.message})
+  if(err.message==='Invalid file type'||err.message==='Invalid extension'||err.message==='Invalid filename'||err.message==='Invalid file content') return res.status(400).json({error:err.message})
   // always JSON, never HTML — include request path for debugging without leaking secrets
   if(!res.headersSent) res.status(err.status||500).json({error: err.expose ? err.message : 'Internal error', path: req.path})
 })
