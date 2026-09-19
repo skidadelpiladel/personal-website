@@ -142,10 +142,10 @@ function Hero({ d }) {
             </div>
             <div className="hero-enter hero-enter-1 font-mono text-sm tracking-wide text-[#9f9fa3] mb-2">Hi, I'm <span className="text-white font-semibold">{d.name}</span>,</div>
             <h1 className="hero-enter hero-enter-2 font-display font-bold tracking-[-0.04em] leading-[0.9] text-[42px] sm:text-[56px] lg:text-[68px]">
-              <span className="block text-white">I make</span>
-              <span className="block text-white">stuff</span>
-              <span className="block text-[#D97706]">and play</span>
-              <span className="block text-[#D97706]">sports.</span>
+              <span className="block text-white">I figure out</span>
+              <span className="block text-white">how things work,</span>
+              <span className="block text-[#D97706]">then see what</span>
+              <span className="block text-[#D97706]">I can build.</span>
             </h1>
             <p className="hero-enter hero-enter-3 mt-6 max-w-[520px] text-[16px] md:text-[17px] leading-7 text-[#9f9fa3]">{d.hero.subtitle}</p>
             <div className="hero-enter hero-enter-3 mt-6 inline-flex items-center gap-2.5 bg-[#161618] border border-[#252529] rounded-full px-3 py-2 pr-4">
@@ -338,12 +338,46 @@ function Strengths({ d }) {
   )
 }
 
+function HowILearn() {
+  return (
+    <section id="learn" className="py-16 md:py-24 bg-[#0f0f11] border-y border-[#161618]">
+      <div className="max-w-[1160px] mx-auto px-6">
+        <div className="reveal">
+          <SectionLabel num="04" label="HOW I LEARN" />
+          <h2 className="font-display font-bold tracking-[-0.03em] text-[32px] md:text-[42px] leading-none">Try first, <span className="text-[#D97706]">then understand.</span></h2>
+          <p className="mt-4 max-w-[560px] text-sm leading-6 text-[#9f9fa3]">I usually try to figure things out myself first. If I get stuck I look for help, but I don't just copy the answer. I try again until it makes sense in my own way.</p>
+        </div>
+        <div className="reveal mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+          {[
+            { n: "01", t: "Try myself", d: "Start on my own", icon: "◈" },
+            { n: "02", t: "Get stuck", d: "Hit a problem", icon: "◎" },
+            { n: "03", t: "Search", d: "AI, YouTube, tutorials", icon: "⬡" },
+            { n: "04", t: "Understand", d: "Figure out why", icon: "✦" },
+            { n: "05", t: "Try again", d: "Do it myself", icon: "↗" },
+            { n: "06", t: "Make it my own", d: "Until it clicks", icon: "✓" },
+          ].map((s, i) => (
+            <div key={s.n} className={`reveal ${i === 1 ? "reveal-delay-1" : i === 2 ? "reveal-delay-2" : i === 3 ? "reveal-delay-3" : ""} bg-[#161618] border border-[#252529] rounded-2xl p-4 text-center hover:border-[#3a3a3e] transition-colors`}>
+              <div className="w-8 h-8 mx-auto rounded-lg bg-[#0c0c0e] border border-[#252529] grid place-items-center font-mono text-xs">{s.icon}</div>
+              <div className="mt-3 font-mono text-[10px] tracking-widest text-[#6b6b6e]">{s.n}</div>
+              <div className="font-display font-semibold text-sm">{s.t}</div>
+              <div className="text-xs text-[#9f9fa3] mt-1">{s.d}</div>
+            </div>
+          ))}
+        </div>
+        <div className="reveal mt-6 bg-[#161618] border border-[#252529] rounded-2xl p-5 text-sm leading-6 text-[#9f9fa3] text-center">
+          I use AI, YouTube and tutorials to help me learn, but the goal is understanding, not just getting the answer.
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function Growth({ d }) {
   return (
     <section id="growth" className="py-16 md:py-24 bg-[#0f0f11] border-y border-[#161618]">
       <div className="max-w-[1160px] mx-auto px-6">
         <div className="reveal">
-          <SectionLabel num="04" label="GROWTH STORY" />
+          <SectionLabel num="05" label="GROWTH STORY" />
           <h2 className="font-display font-bold tracking-[-0.03em] text-[28px] md:text-[42px] leading-[0.95] max-w-[720px]">{d.growth.title}</h2>
         </div>
         <div className="mt-10 grid lg:grid-cols-[1.1fr_0.9fr] gap-8 items-start">
@@ -375,7 +409,7 @@ function Growth({ d }) {
           </div>
           <div className="reveal reveal-delay-1 space-y-5">
             <div className="bg-[#161618] border border-[#252529] rounded-[20px] p-6">
-              <div className="font-mono text-xs tracking-widest text-[#6b6b6e]">FOOTWORK: VISUAL</div>
+              <div className="font-mono text-xs tracking-widest text-[#6b6b6e]">GROWTH: VISUAL</div>
               <div className="mt-4 relative bg-[#0c0c0e] border border-[#252529] rounded-2xl p-5 overflow-hidden">
                 <div className="relative h-[220px] rounded-xl border border-[#2a2a2e] bg-[#111113] overflow-hidden">
                   <div className="absolute inset-3 border border-[#2a2a2e] rounded-lg" />
@@ -390,12 +424,12 @@ function Growth({ d }) {
                     <circle cx="40" cy="170" r="4" fill="#6b6b6e" />
                   </svg>
                   <div className="absolute bottom-2 left-2 font-mono text-[10px] tracking-widest text-[#6b6b6e]">BEFORE → AFTER</div>
-                  <div className="absolute top-2 right-2 bg-[#D97706] text-[#0c0c0e] font-mono text-[10px] font-bold px-2 py-1 rounded-full">+ FOOTWORK</div>
+                  <div className="absolute top-2 right-2 bg-[#D97706] text-[#0c0c0e] font-mono text-[10px] font-bold px-2 py-1 rounded-full">+ UNDERSTANDING</div>
                 </div>
                 <div className="mt-4 grid grid-cols-3 gap-2 font-mono text-[11px]">
-                  <div className="bg-[#161618] border border-[#252529] rounded-xl px-3 py-2 text-center"><span className="text-[#6b6b6e]">BEFORE</span><div className="font-semibold text-white">Out of position</div></div>
-                  <div className="bg-[#D97706] rounded-xl px-3 py-2 text-center text-[#0c0c0e]"><span className="opacity-60">WORK</span><div className="font-bold">Reps</div></div>
-                  <div className="bg-[#0c0c0e] border border-emerald-500/30 rounded-xl px-3 py-2 text-center"><span className="text-emerald-400">NOW</span><div className="font-semibold text-white">In the paint</div></div>
+                  <div className="bg-[#161618] border border-[#252529] rounded-xl px-3 py-2 text-center"><span className="text-[#6b6b6e]">BEFORE</span><div className="font-semibold text-white">Getting answers</div></div>
+                  <div className="bg-[#D97706] rounded-xl px-3 py-2 text-center text-[#0c0c0e]"><span className="opacity-60">WORK</span><div className="font-bold">Understanding</div></div>
+                  <div className="bg-[#0c0c0e] border border-emerald-500/30 rounded-xl px-3 py-2 text-center"><span className="text-emerald-400">NOW</span><div className="font-semibold text-white">My own way</div></div>
                 </div>
               </div>
             </div>
@@ -424,7 +458,7 @@ function Projects({ d }) {
       <div className="max-w-[1160px] mx-auto px-6">
         <div className="flex flex-wrap items-end justify-between gap-6 reveal">
           <div>
-            <SectionLabel num="05" label="PROJECTS" />
+            <SectionLabel num="06" label="PROJECTS" />
             <h2 className="font-display font-bold tracking-[-0.03em] text-[32px] md:text-[42px] leading-none">Things I've <span className="text-[#D97706]">built.</span></h2>
             <p className="mt-3 text-sm leading-6 text-[#9f9fa3] max-w-[520px]">Arduino and experiments, now editable from your private admin.</p>
           </div>
@@ -479,7 +513,7 @@ function Goals({ d }) {
       <div className="max-w-[1160px] mx-auto px-6">
         <div className="grid lg:grid-cols-[0.95fr_1.05fr] gap-10 items-start">
           <div className="reveal">
-            <SectionLabel num="06" label="WHAT'S NEXT" />
+            <SectionLabel num="07" label="WHAT'S NEXT" />
             <h2 className="font-display font-bold tracking-[-0.03em] text-[32px] md:text-[42px] leading-none">Not figured out.<br /><span className="text-[#D97706]">Still becoming.</span></h2>
             <p className="mt-4 text-sm leading-6 text-[#9f9fa3]">I don't have every answer yet, and that's the point. I'm focused on getting better at what I care about and seeing how far I can take it.</p>
             <div className="mt-8 bg-[#161618] border border-[#D97706]/20 rounded-[20px] p-6">
@@ -517,7 +551,7 @@ function Highlights({ d }) {
       <div className="max-w-[1160px] mx-auto px-6">
         <div className="reveal flex flex-wrap items-end justify-between gap-6">
           <div>
-            <SectionLabel num="07" label="HIGHLIGHTS" />
+            <SectionLabel num="08" label="HIGHLIGHTS" />
             <h2 className="font-display font-bold tracking-[-0.03em] text-[32px] md:text-[42px] leading-none">Highlights &<br /><span className="text-[#9f9fa3]">achievements.</span></h2>
           </div>
           <p className="max-w-[420px] text-sm leading-6 text-[#9f9fa3]">This space is ready for awards, competitions, certificates, and sports moments, only when you have them. No filler, no fake entries.</p>
@@ -564,18 +598,18 @@ function Highlights({ d }) {
 
 function Personal({ d }) {
   return (
-    <section className="py-16 md:py-24 bg-[#0f0f11] border-y border-[#161618]">
+    <section id="working" className="py-16 md:py-24 bg-[#0f0f11] border-y border-[#161618]">
       <div className="max-w-[1160px] mx-auto px-6">
         <div className="reveal">
-          <SectionLabel num="08" label="PERSONAL SIDE" />
-          <h2 className="font-display font-bold tracking-[-0.03em] text-[32px] md:text-[42px] leading-none">Beyond the <span className="text-[#D97706]">portfolio.</span></h2>
-          <p className="mt-3 text-sm leading-6 text-[#9f9fa3] max-w-[560px]">Not every section needs to be impressive. Some just need to be honest. Here's what I'm actually doing, learning, and trying to get better at right now.</p>
+          <SectionLabel num="09" label="WORKING ON" />
+          <h2 className="font-display font-bold tracking-[-0.03em] text-[32px] md:text-[42px] leading-none">Not finished. <span className="text-[#D97706]">Still improving.</span></h2>
+          <p className="mt-3 text-sm leading-6 text-[#9f9fa3] max-w-[560px]">I'm not finished developing these skills. These are areas I'm actively trying to improve. I haven't solved them yet, but I'm working on them honestly.</p>
         </div>
         <div className="mt-10 grid lg:grid-cols-3 gap-5">
           {[
-            { title: "Right now", items: d.personal.now, accent: "bg-[#D97706] text-[#0c0c0e]" },
-            { title: "Learning", items: d.personal.learning, accent: "bg-[#38bdf8] text-[#0c0c0e]" },
-            { title: "Trying to improve", items: d.personal.improving, accent: "bg-[#fb923c] text-[#0c0c0e]" },
+            { title: "Flexibility", items: d.personal.now, accent: "bg-[#D97706] text-[#0c0c0e]" },
+            { title: "Creativity outside interests", items: d.personal.learning, accent: "bg-[#38bdf8] text-[#0c0c0e]" },
+            { title: "Consistency", items: d.personal.improving, accent: "bg-[#fb923c] text-[#0c0c0e]" },
           ].map((col, idx) => (
             <div key={col.title} className={`reveal ${idx === 1 ? "reveal-delay-1" : idx === 2 ? "reveal-delay-2" : ""} bg-[#161618] border border-[#252529] rounded-[20px] p-6`}>
               <div className={`inline-flex font-mono text-xs tracking-widest px-2.5 py-1 rounded-full font-bold ${col.accent}`}>{col.title.toUpperCase()}</div>
@@ -599,6 +633,51 @@ function Personal({ d }) {
             </div>
           </div>
           <span className="font-mono text-xs tracking-widest text-[#6b6b6e] shrink-0">HONEST &gt; INSPIRATIONAL</span>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Values() {
+  return (
+    <section className="py-16 md:py-24">
+      <div className="max-w-[1160px] mx-auto px-6">
+        <div className="reveal">
+          <SectionLabel num="10" label="WHAT MATTERS" />
+          <h2 className="font-display font-bold tracking-[-0.03em] text-[32px] md:text-[42px] leading-none">What matters <span className="text-[#D97706]">to me.</span></h2>
+          <p className="mt-4 max-w-[560px] text-sm leading-6 text-[#9f9fa3]">Three values that guide how I approach things. They shape how I learn, build, and decide what to do next.</p>
+        </div>
+        <div className="mt-10 grid md:grid-cols-3 gap-4">
+          {[
+            { title: "Freedom", desc: "I want the freedom to choose how I live and how I approach things. To do things my own way, not just how I'm told to.", detail: "Live my way" },
+            { title: "Improvement", desc: "I want to keep developing instead of staying at the same level. Getting a little better as I go matters to me.", detail: "Keep growing" },
+            { title: "Enjoying my career", desc: "I want a career I genuinely enjoy, not just one that sounds impressive. Enjoying what I do is important.", detail: "Enjoy the work" },
+          ].map((v, i) => (
+            <div key={v.title} className={`reveal ${i === 1 ? "reveal-delay-1" : i === 2 ? "reveal-delay-2" : ""} bg-[#161618] border border-[#252529] rounded-2xl p-6`}>
+              <div className="font-mono text-[11px] tracking-[0.14em] text-[#D97706]">{v.detail}</div>
+              <h3 className="mt-2 font-display font-semibold text-lg">{v.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-[#9f9fa3]">{v.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function WhatMakesMeMe() {
+  return (
+    <section className="py-16 md:py-24 bg-[#0f0f11] border-y border-[#161618]">
+      <div className="max-w-[1160px] mx-auto px-6">
+        <div className="reveal max-w-[720px] mx-auto text-center">
+          <SectionLabel num="11" label="WHAT MAKES ME ME" />
+          <h2 className="font-display font-bold tracking-[-0.03em] text-[28px] md:text-[38px] leading-tight">I look at things <span className="text-[#D97706]">my own way.</span></h2>
+          <p className="mt-4 text-[15px] leading-7 text-[#d4d4d8]">One of the biggest things that makes me who I am is my creativity and the way I look at things differently at first. I like understanding how things work, then thinking about what I could do with that understanding.</p>
+          <p className="mt-3 text-sm leading-6 text-[#9f9fa3]">I'm still figuring myself out, but I know I enjoy understanding things, building things, and doing things my own way. That curiosity is what keeps me going.</p>
+          <div className="mt-8 inline-flex flex-wrap justify-center items-center gap-2 bg-[#161618] border border-[#252529] rounded-full px-4 py-2 font-mono text-[10px] md:text-xs tracking-widest text-[#6b6b6e]">
+            <span>CURIOSITY</span><span className="text-[#D97706]">→</span><span>CREATIVITY</span><span className="text-[#D97706]">→</span><span>INDEPENDENCE</span><span className="text-[#D97706]">→</span><span>UNDERSTANDING</span><span className="text-[#D97706]">→</span><span>IMPROVEMENT</span>
+          </div>
         </div>
       </div>
     </section>
@@ -671,11 +750,14 @@ function PortfolioPage() {
         <About d={data} />
         <WhatIDo d={data} />
         <Strengths d={data} />
+        <HowILearn />
         <Growth d={data} />
         <Projects d={data} />
-        <Goals d={data} />
-        <Highlights d={data} />
         <Personal d={data} />
+        <Values />
+        <Goals d={data} />
+        <WhatMakesMeMe />
+        <Highlights d={data} />
       </main>
       <Footer d={data} />
     </div>
