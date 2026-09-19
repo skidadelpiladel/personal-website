@@ -225,12 +225,12 @@ function Hero({ d }) {
 
 function About({ d }) {
   return (
-    <section id="about" className="py-16 md:py-24 border-t border-[#161618]">
+    <section id="about" className="py-20 md:py-28 border-t border-[#161618]">
       <div className="max-w-[1160px] mx-auto px-6">
         <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-16 items-start">
           <div className="reveal">
             <SectionLabel num="01" label="ABOUT ME" />
-            <h2 className="font-display font-bold tracking-[-0.03em] text-[32px] md:text-[40px] leading-[0.95]">
+            <h2 className="font-display font-bold tracking-[-0.03em] text-[32px] md:text-[42px] leading-[0.95]">
               Reserved first.<br />
               <span className="text-[#9f9fa3]">Real once you</span><br />
               know me.
@@ -282,7 +282,7 @@ function About({ d }) {
 
 function WhatIDo({ d }) {
   return (
-    <section id="work" className="py-16 md:py-24 bg-[#0f0f11] border-y border-[#161618]">
+    <section id="work" className="py-20 md:py-28 bg-[#0f0f11] border-y border-[#161618]">
       <div className="max-w-[1160px] mx-auto px-6">
         <div className="flex flex-wrap items-end justify-between gap-6 reveal">
           <div>
@@ -316,7 +316,7 @@ function WhatIDo({ d }) {
 
 function Strengths({ d }) {
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-20 md:py-28">
       <div className="max-w-[1160px] mx-auto px-6">
         <div className="reveal max-w-[720px]">
           <SectionLabel num="03" label="STRENGTHS" />
@@ -340,31 +340,35 @@ function Strengths({ d }) {
 
 function HowILearn() {
   return (
-    <section id="learn" className="py-16 md:py-24 bg-[#0f0f11] border-y border-[#161618]">
+    <section id="learn" className="py-20 md:py-28 bg-[#0f0f11] border-y border-[#161618]">
       <div className="max-w-[1160px] mx-auto px-6">
         <div className="reveal">
           <SectionLabel num="04" label="HOW I LEARN" />
           <h2 className="font-display font-bold tracking-[-0.03em] text-[32px] md:text-[42px] leading-none">Try first, <span className="text-[#D97706]">then understand.</span></h2>
           <p className="mt-4 max-w-[560px] text-sm leading-6 text-[#9f9fa3]">I usually try to figure things out myself first. If I get stuck I look for help, but I don't just copy the answer. I try again until it makes sense in my own way.</p>
         </div>
-        <div className="reveal mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-          {[
-            { n: "01", t: "Try myself", d: "Start on my own", icon: "◈" },
-            { n: "02", t: "Get stuck", d: "Hit a problem", icon: "◎" },
-            { n: "03", t: "Search", d: "AI, YouTube, tutorials", icon: "⬡" },
-            { n: "04", t: "Understand", d: "Figure out why", icon: "✦" },
-            { n: "05", t: "Try again", d: "Do it myself", icon: "↗" },
-            { n: "06", t: "Make it my own", d: "Until it clicks", icon: "✓" },
-          ].map((s, i) => (
-            <div key={s.n} className={`reveal ${i === 1 ? "reveal-delay-1" : i === 2 ? "reveal-delay-2" : i === 3 ? "reveal-delay-3" : ""} bg-[#161618] border border-[#252529] rounded-2xl p-4 text-center hover:border-[#3a3a3e] transition-colors`}>
-              <div className="w-8 h-8 mx-auto rounded-lg bg-[#0c0c0e] border border-[#252529] grid place-items-center font-mono text-xs">{s.icon}</div>
-              <div className="mt-3 font-mono text-[10px] tracking-widest text-[#6b6b6e]">{s.n}</div>
-              <div className="font-display font-semibold text-sm">{s.t}</div>
-              <div className="text-xs text-[#9f9fa3] mt-1">{s.d}</div>
-            </div>
-          ))}
+        <div className="reveal mt-10 relative">
+          <div className="hidden lg:block absolute top-[44px] left-[5%] right-[5%] h-px bg-gradient-to-r from-transparent via-[#2a2a2e] to-transparent" aria-hidden="true" />
+          <div className="hidden md:block lg:hidden absolute top-[88px] left-6 right-6 h-px bg-[#252529]/60" aria-hidden="true" />
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 relative">
+            {[
+              { n: "01", t: "Try myself", d: "Start on my own", icon: "◈" },
+              { n: "02", t: "Get stuck", d: "Hit a problem", icon: "◎" },
+              { n: "03", t: "Search", d: "AI, YouTube, tutorials", icon: "⬡" },
+              { n: "04", t: "Understand", d: "Figure out why", icon: "✦" },
+              { n: "05", t: "Try again", d: "Do it myself", icon: "↗" },
+              { n: "06", t: "Make it my own", d: "Until it clicks", icon: "✓" },
+            ].map((s, i) => (
+              <div key={s.n} className={`reveal ${i === 1 ? "reveal-delay-1" : i === 2 ? "reveal-delay-2" : i === 3 ? "reveal-delay-3" : ""} bg-[#161618] border border-[#252529] rounded-2xl p-4 md:p-5 text-center hover:border-[#3a3a3e] transition-colors relative`}>
+                <div className="w-8 h-8 mx-auto rounded-lg bg-[#0c0c0e] border border-[#252529] grid place-items-center font-mono text-xs">{s.icon}</div>
+                <div className="mt-3 font-mono text-[10px] tracking-widest text-[#6b6b6e]">{s.n}</div>
+                <div className="font-display font-semibold text-sm">{s.t}</div>
+                <div className="text-xs text-[#9f9fa3] mt-1 leading-4">{s.d}</div>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="reveal mt-6 bg-[#161618] border border-[#252529] rounded-2xl p-5 text-sm leading-6 text-[#9f9fa3] text-center">
+        <div className="reveal mt-8 bg-[#161618]/60 border border-[#252529]/80 rounded-2xl px-5 py-4 text-sm leading-6 text-[#9f9fa3] text-center max-w-[640px] mx-auto">
           I use AI, YouTube and tutorials to help me learn, but the goal is understanding, not just getting the answer.
         </div>
       </div>
@@ -374,7 +378,7 @@ function HowILearn() {
 
 function Growth({ d }) {
   return (
-    <section id="growth" className="py-16 md:py-24 bg-[#0f0f11] border-y border-[#161618]">
+    <section id="growth" className="py-20 md:py-28 bg-[#0f0f11] border-y border-[#161618]">
       <div className="max-w-[1160px] mx-auto px-6">
         <div className="reveal">
           <SectionLabel num="05" label="GROWTH STORY" />
@@ -454,19 +458,19 @@ function Growth({ d }) {
 
 function Projects({ d }) {
   return (
-    <section id="projects" className="py-16 md:py-24">
+    <section id="projects" className="py-20 md:py-28">
       <div className="max-w-[1160px] mx-auto px-6">
         <div className="flex flex-wrap items-end justify-between gap-6 reveal">
           <div>
             <SectionLabel num="06" label="PROJECTS" />
             <h2 className="font-display font-bold tracking-[-0.03em] text-[32px] md:text-[42px] leading-none">Things I've <span className="text-[#D97706]">built.</span></h2>
-            <p className="mt-3 text-sm leading-6 text-[#9f9fa3] max-w-[520px]">Arduino and experiments, now editable from your private admin.</p>
+            <p className="mt-4 text-sm leading-6 text-[#9f9fa3] max-w-[520px]">A showcase of what I've been figuring out and making — the AI + LCD build is the one I'm most proud of.</p>
           </div>
           <a href="#contact" className="hidden md:inline-flex text-sm font-mono tracking-wide text-[#9f9fa3] hover:text-white group">Have an idea? Let's talk <span className="card-arrow inline-block">→</span></a>
         </div>
-        <div className="mt-10 grid md:grid-cols-3 gap-5">
+        <div className="mt-10 md:mt-12 grid md:grid-cols-3 gap-5 md:gap-6">
           {d.projects.map((p, i) => (
-            <div key={i} className={`reveal ${i === 1 ? "reveal-delay-1" : i === 2 ? "reveal-delay-2" : ""} project-card group bg-[#161618] border border-[#252529] rounded-[20px] overflow-hidden flex flex-col`}>
+            <div key={i} className={`reveal ${i === 1 ? "reveal-delay-1" : i === 2 ? "reveal-delay-2" : ""} project-card group bg-[#161618] border border-[#252529] rounded-[20px] overflow-hidden flex flex-col ${i === 0 ? "!border-[#D97706]/20 !bg-[#1c1c1e] shadow-[0_0_0_1px_rgba(217,119,6,0.06)]" : ""}`}>
               <div className="h-44 bg-[#0c0c0e] border-b border-[#252529] relative overflow-hidden p-0 flex flex-col justify-between">
                 {p.image && p.image !== "#" && p.image.trim() !== "" ? (
                   <img src={p.image} alt={p.title} className="w-full h-full object-cover" loading="lazy" />
@@ -509,7 +513,7 @@ function Projects({ d }) {
 
 function Goals({ d }) {
   return (
-    <section id="goals" className="py-16 md:py-24 bg-[#0f0f11] border-y border-[#161618]">
+    <section id="goals" className="py-20 md:py-28 bg-[#0f0f11] border-y border-[#161618]">
       <div className="max-w-[1160px] mx-auto px-6">
         <div className="grid lg:grid-cols-[0.95fr_1.05fr] gap-10 items-start">
           <div className="reveal">
@@ -547,7 +551,7 @@ function Goals({ d }) {
 function Highlights({ d }) {
   const has = d.highlights.length > 0
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-20 md:py-28">
       <div className="max-w-[1160px] mx-auto px-6">
         <div className="reveal flex flex-wrap items-end justify-between gap-6">
           <div>
@@ -598,7 +602,7 @@ function Highlights({ d }) {
 
 function Personal({ d }) {
   return (
-    <section id="working" className="py-16 md:py-24 bg-[#0f0f11] border-y border-[#161618]">
+    <section id="working" className="py-20 md:py-28 bg-[#0f0f11] border-y border-[#161618]">
       <div className="max-w-[1160px] mx-auto px-6">
         <div className="reveal">
           <SectionLabel num="09" label="WORKING ON" />
@@ -641,7 +645,7 @@ function Personal({ d }) {
 
 function Values() {
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-20 md:py-28">
       <div className="max-w-[1160px] mx-auto px-6">
         <div className="reveal">
           <SectionLabel num="10" label="WHAT MATTERS" />
@@ -668,15 +672,15 @@ function Values() {
 
 function WhatMakesMeMe() {
   return (
-    <section className="py-16 md:py-24 bg-[#0f0f11] border-y border-[#161618]">
+    <section className="py-20 md:py-28 bg-[#0f0f11] border-y border-[#161618]">
       <div className="max-w-[1160px] mx-auto px-6">
-        <div className="reveal max-w-[720px] mx-auto text-center">
+        <div className="reveal max-w-[680px] mx-auto text-center">
           <SectionLabel num="11" label="WHAT MAKES ME ME" />
-          <h2 className="font-display font-bold tracking-[-0.03em] text-[28px] md:text-[38px] leading-tight">I look at things <span className="text-[#D97706]">my own way.</span></h2>
-          <p className="mt-4 text-[15px] leading-7 text-[#d4d4d8]">One of the biggest things that makes me who I am is my creativity and the way I look at things differently at first. I like understanding how things work, then thinking about what I could do with that understanding.</p>
-          <p className="mt-3 text-sm leading-6 text-[#9f9fa3]">I'm still figuring myself out, but I know I enjoy understanding things, building things, and doing things my own way. That curiosity is what keeps me going.</p>
-          <div className="mt-8 inline-flex flex-wrap justify-center items-center gap-2 bg-[#161618] border border-[#252529] rounded-full px-4 py-2 font-mono text-[10px] md:text-xs tracking-widest text-[#6b6b6e]">
-            <span>CURIOSITY</span><span className="text-[#D97706]">→</span><span>CREATIVITY</span><span className="text-[#D97706]">→</span><span>INDEPENDENCE</span><span className="text-[#D97706]">→</span><span>UNDERSTANDING</span><span className="text-[#D97706]">→</span><span>IMPROVEMENT</span>
+          <h2 className="font-display font-bold tracking-[-0.03em] text-[32px] md:text-[42px] leading-[0.95]">I look at things <span className="text-[#D97706]">my own way.</span></h2>
+          <p className="mt-6 text-[16px] leading-7 text-[#d4d4d8]">One of the biggest things that makes me who I am is my creativity and the way I look at things differently at first. I like understanding how things work, then thinking about what I could do with that understanding.</p>
+          <p className="mt-4 text-sm leading-6 text-[#9f9fa3]">I'm still figuring myself out, but I know I enjoy understanding things, building things, and doing things my own way. That curiosity is what keeps me going.</p>
+          <div className="mt-10 inline-flex flex-wrap justify-center items-center gap-2 md:gap-3 bg-[#161618] border border-[#252529] rounded-full px-5 md:px-7 py-3 font-mono text-[10px] md:text-xs tracking-[0.14em] text-[#9f9fa3]">
+            <span>CURIOSITY</span><span className="text-[#D97706]/60">→</span><span>CREATIVITY</span><span className="text-[#D97706]/60">→</span><span>INDEPENDENCE</span><span className="text-[#D97706]/60">→</span><span>UNDERSTANDING</span><span className="text-[#D97706]/60">→</span><span>IMPROVEMENT</span>
           </div>
         </div>
       </div>
