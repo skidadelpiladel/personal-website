@@ -36,8 +36,8 @@ body {
 /* Reveal animation: staggered, perf-safe */
 .reveal {
   opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1);
   will-change: transform, opacity;
 }
 .reveal.visible {
@@ -47,6 +47,40 @@ body {
 .reveal-delay-1 { transition-delay: 0.08s; }
 .reveal-delay-2 { transition-delay: 0.16s; }
 .reveal-delay-3 { transition-delay: 0.24s; }
+/* Fine-grained stagger for card grids (60ms steps) */
+.reveal-stagger-1 { transition-delay: 0.06s; }
+.reveal-stagger-2 { transition-delay: 0.12s; }
+.reveal-stagger-3 { transition-delay: 0.18s; }
+.reveal-stagger-4 { transition-delay: 0.24s; }
+.reveal-stagger-5 { transition-delay: 0.30s; }
+
+/* How I Learn: connecting line progressively reveals */
+.learn-line {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.9s cubic-bezier(0.16,1,0.3,1);
+}
+.learn-line.visible {
+  transform: scaleX(1);
+}
+
+/* Central narrative: words fade + 10px */
+.narrative-word {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.5s cubic-bezier(0.16,1,0.3,1);
+  will-change: transform, opacity;
+}
+.narrative-word.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Mobile: shorter distance/duration */
+@media (max-width: 768px) {
+  .reveal { transform: translateY(12px); transition-duration: 0.5s; }
+  .narrative-word { transform: translateY(8px); }
+}
 
 /* Hero entrance: subtle stagger on initial load */
 @keyframes heroIn {
@@ -134,7 +168,12 @@ body {
 }
 
 /* Scroll progress bar */
-.scroll-progress { position: fixed; top:0; left:0; height:1px; background: #D97706; transform-origin: left; z-index: 60; opacity:0.9; }
+.scroll-progress {
+  position: fixed; top:0; left:0; height:1px; background: #D97706;
+  transform-origin: left; z-index: 60; opacity:0.9;
+  transition: width 0.12s linear;
+  will-change: width;
+}
 
 /* Cursor ambient light: desktop only, very subtle */
 .cursor-light {
@@ -166,14 +205,17 @@ body {
   html { scroll-behavior: auto; }
   * { scroll-behavior: auto !important; }
   .reveal, .hero-enter, .hero-enter-1, .hero-enter-2, .hero-enter-3, .hero-enter-4,
+  .reveal-stagger-1, .reveal-stagger-2, .reveal-stagger-3, .reveal-stagger-4, .reveal-stagger-5,
+  .learn-line, .narrative-word,
   .grid-drift, .blink, .project-card, .btn-press, .tag-hover, .nav-link::after,
   .project-card img, .card-arrow, .cursor-light, .scroll-progress, .parallax {
     animation: none !important;
     transition: none !important;
     transform: none !important;
   }
-  .reveal { opacity: 1 !important; }
+  .reveal, .narrative-word { opacity: 1 !important; }
   .hero-enter { opacity: 1 !important; }
+  .learn-line { transform: none !important; opacity: 1 !important; }
   .cursor-light { display:none !important; }
   .scroll-progress { display:none; }
 }

@@ -2,7 +2,7 @@ import { useEffect } from "react"
 
 export function useReveal() {
   useEffect(() => {
-    const els = document.querySelectorAll(".reveal")
+    const els = document.querySelectorAll(".reveal, .narrative-word, .learn-line")
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {

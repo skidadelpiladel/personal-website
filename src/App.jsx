@@ -293,7 +293,7 @@ function WhatIDo({ d }) {
         </div>
         <div className="mt-10 grid md:grid-cols-2 gap-5">
           {d.whatIDo.map((card, i) => (
-            <div key={card.id} className={`reveal ${i % 2 ? "reveal-delay-1" : ""} group relative bg-[#161618] border border-[#252529] rounded-[20px] p-6 md:p-7 overflow-hidden hover:border-[#2e2e32] hover:bg-[#1a1a1e] transition-colors`}>
+            <div key={card.id} className={`reveal ${["", "reveal-stagger-1", "reveal-stagger-2", "reveal-stagger-3", "reveal-stagger-4", "reveal-stagger-5"][i] || ""} group relative bg-[#161618] border border-[#252529] rounded-[20px] p-6 md:p-7 overflow-hidden hover:border-[#2e2e32] hover:bg-[#1a1a1e] transition-colors`}>
               <div className="absolute top-0 right-0 w-32 h-32 opacity-[0.04] group-hover:opacity-[0.07] transition-opacity pointer-events-none" style={{ background: `radial-gradient(circle at 30% 30%, ${i % 2 ? "#D97706" : "#38bdf8"}, transparent 60%)` }} />
               <div className="flex items-start justify-between">
                 <span className="font-mono text-[11px] tracking-[0.16em] text-[#6b6b6e]">{card.label}</span>
@@ -325,7 +325,7 @@ function Strengths({ d }) {
         </div>
         <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           {d.strengths.map((s, i) => (
-            <div key={s.title} className={`reveal ${i === 1 ? "reveal-delay-1" : i === 2 ? "reveal-delay-2" : i === 3 ? "reveal-delay-3" : ""} bg-[#161618] border border-[#252529] rounded-2xl p-5 flex flex-col`}>
+            <div key={s.title} className={`reveal ${["", "reveal-stagger-1", "reveal-stagger-2", "reveal-stagger-3"][i] || ""} bg-[#161618] border border-[#252529] rounded-2xl p-5 flex flex-col`}>
               <div className="font-mono text-[11px] tracking-[0.14em] text-[#D97706]">{s.detail}</div>
               <h3 className="mt-2 font-display font-semibold text-[16px] leading-tight">{s.title}</h3>
               <p className="mt-2 text-sm leading-6 text-[#9f9fa3] flex-1">{s.desc}</p>
@@ -348,8 +348,8 @@ function HowILearn() {
           <p className="mt-4 max-w-[560px] text-sm leading-6 text-[#9f9fa3]">I usually try to figure things out myself first. If I get stuck I look for help, but I don't just copy the answer. I try again until it makes sense in my own way.</p>
         </div>
         <div className="reveal mt-10 relative">
-          <div className="hidden lg:block absolute top-[44px] left-[5%] right-[5%] h-px bg-gradient-to-r from-transparent via-[#2a2a2e] to-transparent" aria-hidden="true" />
-          <div className="hidden md:block lg:hidden absolute top-[88px] left-6 right-6 h-px bg-[#252529]/60" aria-hidden="true" />
+          <div className="learn-line hidden lg:block absolute top-[44px] left-[5%] right-[5%] h-px bg-gradient-to-r from-transparent via-[#2a2a2e] to-transparent" aria-hidden="true" />
+          <div className="learn-line hidden md:block lg:hidden absolute top-[88px] left-6 right-6 h-px bg-[#252529]/60" aria-hidden="true" />
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 relative">
             {[
               { n: "01", t: "Try myself", d: "Start on my own", icon: "◈" },
@@ -359,7 +359,7 @@ function HowILearn() {
               { n: "05", t: "Try again", d: "Do it myself", icon: "↗" },
               { n: "06", t: "Make it my own", d: "Until it clicks", icon: "✓" },
             ].map((s, i) => (
-              <div key={s.n} className={`reveal ${i === 1 ? "reveal-delay-1" : i === 2 ? "reveal-delay-2" : i === 3 ? "reveal-delay-3" : ""} bg-[#161618] border border-[#252529] rounded-2xl p-4 md:p-5 text-center hover:border-[#3a3a3e] transition-colors relative`}>
+              <div key={s.n} className={`reveal ${["", "reveal-stagger-1", "reveal-stagger-2", "reveal-stagger-3", "reveal-stagger-4", "reveal-stagger-5"][i] || ""} bg-[#161618] border border-[#252529] rounded-2xl p-4 md:p-5 text-center hover:border-[#3a3a3e] transition-colors relative`}>
                 <div className="w-8 h-8 mx-auto rounded-lg bg-[#0c0c0e] border border-[#252529] grid place-items-center font-mono text-xs">{s.icon}</div>
                 <div className="mt-3 font-mono text-[10px] tracking-widest text-[#6b6b6e]">{s.n}</div>
                 <div className="font-display font-semibold text-sm">{s.t}</div>
@@ -470,7 +470,7 @@ function Projects({ d }) {
         </div>
         <div className="mt-10 md:mt-12 grid md:grid-cols-3 gap-5 md:gap-6">
           {d.projects.map((p, i) => (
-            <div key={i} className={`reveal ${i === 1 ? "reveal-delay-1" : i === 2 ? "reveal-delay-2" : ""} project-card group bg-[#161618] border border-[#252529] rounded-[20px] overflow-hidden flex flex-col ${i === 0 ? "!border-[#D97706]/20 !bg-[#1c1c1e] shadow-[0_0_0_1px_rgba(217,119,6,0.06)]" : ""}`}>
+            <div key={i} className={`reveal ${["", "reveal-stagger-1", "reveal-stagger-2"][i] || ""} project-card group bg-[#161618] border border-[#252529] rounded-[20px] overflow-hidden flex flex-col ${i === 0 ? "!border-[#D97706]/20 !bg-[#1c1c1e] shadow-[0_0_0_1px_rgba(217,119,6,0.06)]" : ""}`}>
               <div className="h-44 bg-[#0c0c0e] border-b border-[#252529] relative overflow-hidden p-0 flex flex-col justify-between">
                 {p.image && p.image !== "#" && p.image.trim() !== "" ? (
                   <img src={p.image} alt={p.title} className="w-full h-full object-cover" loading="lazy" />
@@ -531,7 +531,7 @@ function Goals({ d }) {
               <div className="absolute left-6 md:left-7 top-12 bottom-12 w-px bg-[#252529] hidden sm:block" />
               <div className="space-y-6">
                 {d.goals.map((g, i) => (
-                  <div key={g.k} className="relative flex gap-4">
+                  <div key={g.k} className={`reveal ${["", "reveal-stagger-1", "reveal-stagger-2", "reveal-stagger-3"][i] || ""} relative flex gap-4`}>
                     <div className="hidden sm:grid w-8 h-8 rounded-full bg-[#0c0c0e] border border-[#252529] place-items-center font-mono text-xs font-bold shrink-0">{String(i + 1).padStart(2, "0")}</div>
                     <div className="flex-1 bg-[#0c0c0e] border border-[#252529] rounded-2xl p-4">
                       <div className="font-display font-semibold tracking-tight">{g.k}</div>
@@ -658,7 +658,7 @@ function Values() {
             { title: "Improvement", desc: "I want to keep developing instead of staying at the same level. Getting a little better as I go matters to me.", detail: "Keep growing" },
             { title: "Enjoying my career", desc: "I want a career I genuinely enjoy, not just one that sounds impressive. Enjoying what I do is important.", detail: "Enjoy the work" },
           ].map((v, i) => (
-            <div key={v.title} className={`reveal ${i === 1 ? "reveal-delay-1" : i === 2 ? "reveal-delay-2" : ""} bg-[#161618] border border-[#252529] rounded-2xl p-6`}>
+            <div key={v.title} className={`reveal ${["", "reveal-stagger-1", "reveal-stagger-2"][i] || ""} bg-[#161618] border border-[#252529] rounded-2xl p-6`}>
               <div className="font-mono text-[11px] tracking-[0.14em] text-[#D97706]">{v.detail}</div>
               <h3 className="mt-2 font-display font-semibold text-lg">{v.title}</h3>
               <p className="mt-2 text-sm leading-6 text-[#9f9fa3]">{v.desc}</p>
@@ -679,8 +679,8 @@ function WhatMakesMeMe() {
           <h2 className="font-display font-bold tracking-[-0.03em] text-[32px] md:text-[42px] leading-[0.95]">I look at things <span className="text-[#D97706]">my own way.</span></h2>
           <p className="mt-6 text-[16px] leading-7 text-[#d4d4d8]">One of the biggest things that makes me who I am is my creativity and the way I look at things differently at first. I like understanding how things work, then thinking about what I could do with that understanding.</p>
           <p className="mt-4 text-sm leading-6 text-[#9f9fa3]">I'm still figuring myself out, but I know I enjoy understanding things, building things, and doing things my own way. That curiosity is what keeps me going.</p>
-          <div className="mt-10 inline-flex flex-wrap justify-center items-center gap-2 md:gap-3 bg-[#161618] border border-[#252529] rounded-full px-5 md:px-7 py-3 font-mono text-[10px] md:text-xs tracking-[0.14em] text-[#9f9fa3]">
-            <span>CURIOSITY</span><span className="text-[#D97706]/60">→</span><span>CREATIVITY</span><span className="text-[#D97706]/60">→</span><span>INDEPENDENCE</span><span className="text-[#D97706]/60">→</span><span>UNDERSTANDING</span><span className="text-[#D97706]/60">→</span><span>IMPROVEMENT</span>
+          <div className="mt-10 inline-flex flex-wrap justify-center items-center gap-2 md:gap-3 bg-[#161618] border border-[#252529] rounded-full px-5 md:px-7 py-3 font-mono text-[10px] md:text-xs tracking-[0.14em] text-[#9f9fa3] reveal">
+            <span className="narrative-word" style={{ transitionDelay: "0ms" }}>CURIOSITY</span><span className="narrative-word text-[#D97706]/60" style={{ transitionDelay: "80ms" }}>→</span><span className="narrative-word" style={{ transitionDelay: "160ms" }}>CREATIVITY</span><span className="narrative-word text-[#D97706]/60" style={{ transitionDelay: "240ms" }}>→</span><span className="narrative-word" style={{ transitionDelay: "320ms" }}>INDEPENDENCE</span><span className="narrative-word text-[#D97706]/60" style={{ transitionDelay: "400ms" }}>→</span><span className="narrative-word" style={{ transitionDelay: "480ms" }}>UNDERSTANDING</span><span className="narrative-word text-[#D97706]/60" style={{ transitionDelay: "560ms" }}>→</span><span className="narrative-word" style={{ transitionDelay: "640ms" }}>IMPROVEMENT</span>
           </div>
         </div>
       </div>
